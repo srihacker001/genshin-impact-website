@@ -1,0 +1,2408 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{
+    --gold:#C8A96E;--gold-bright:#F0D080;--deep-blue:#0A0F2E;--mid-blue:#111736;
+    --purple:#4A2070;--purple-light:#7B44B8;--purple-glow:rgba(123,68,184,0.4);
+    --text-main:#E8E0D0;--text-muted:#8B85A0;--glass:rgba(255,255,255,0.05);
+    --glass-border:rgba(200,169,110,0.2);--card-bg:rgba(15,20,50,0.8);
+  }
+  html{scroll-behavior:smooth}
+  body{font-family:'Inter',sans-serif;background:var(--deep-blue);color:var(--text-main);overflow-x:hidden;min-height:100vh}
+  
+  /* ===== ANIMATED BG ===== */
+  .bg-stars{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+  .star{position:absolute;background:#fff;border-radius:50%;animation:twinkle var(--dur,3s) infinite alternate ease-in-out}
+  @keyframes twinkle{0%{opacity:0.1;transform:scale(1)}100%{opacity:0.8;transform:scale(1.4)}}
+  .bg-gradient{position:fixed;inset:0;background:
+    radial-gradient(ellipse 80% 60% at 20% 0%,rgba(74,32,112,0.35) 0%,transparent 60%),
+    radial-gradient(ellipse 60% 80% at 80% 100%,rgba(10,30,80,0.6) 0%,transparent 60%),
+    linear-gradient(160deg,#050810 0%,#0a0f2e 40%,#0d1535 70%,#080c22 100%);
+    pointer-events:none;z-index:0}
+
+  /* ===== NAV ===== */
+  nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:0 2rem;height:64px;display:flex;align-items:center;justify-content:space-between;background:rgba(5,8,18,0.85);backdrop-filter:blur(12px);border-bottom:1px solid var(--glass-border);transition:all .3s}
+  .nav-logo{display:flex;align-items:center;gap:.6rem;cursor:pointer;flex-shrink:0}
+  .logo-gem{width:32px;height:32px;background:conic-gradient(from 0deg,#C8A96E,#F0D080,#7B44B8,#C8A96E);clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);animation:spinGlow 8s linear infinite}
+  @keyframes spinGlow{0%{filter:drop-shadow(0 0 6px #C8A96E)}50%{filter:drop-shadow(0 0 12px #7B44B8)}100%{filter:drop-shadow(0 0 6px #C8A96E)}}
+  .logo-text{font-family:'Cinzel',serif;font-size:1.1rem;font-weight:700;background:linear-gradient(135deg,var(--gold),var(--gold-bright),var(--purple-light));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+  .nav-links{display:flex;gap:.15rem;align-items:center;flex:1;justify-content:center;flex-wrap:wrap}
+  .nav-link{font-size:.72rem;font-weight:500;letter-spacing:.06em;text-transform:uppercase;padding:.4rem .55rem;border-radius:4px;cursor:pointer;color:var(--text-muted);transition:color .2s,background .2s;white-space:nowrap}
+  .nav-link:hover,.nav-link.active{color:var(--gold);background:rgba(200,169,110,0.08)}
+  .nav-right{display:flex;align-items:center;gap:.5rem;flex-shrink:0}
+  .nav-search{background:var(--glass);border:1px solid var(--glass-border);border-radius:20px;padding:.35rem .8rem;color:var(--text-main);font-size:.75rem;width:140px;outline:none;transition:width .3s,border-color .3s}
+  .nav-search:focus{width:180px;border-color:var(--gold)}
+  .nav-search::placeholder{color:var(--text-muted)}
+  .nav-btn{background:linear-gradient(135deg,var(--purple),var(--purple-light));border:1px solid rgba(123,68,184,0.5);border-radius:6px;color:#fff;font-size:.72rem;font-weight:600;padding:.4rem .9rem;cursor:pointer;letter-spacing:.05em;transition:all .2s}
+  .nav-btn:hover{background:linear-gradient(135deg,var(--purple-light),#9B64D8);transform:translateY(-1px);box-shadow:0 4px 16px var(--purple-glow)}
+
+  /* ===== PAGES ===== */
+  .page{display:none;position:relative;z-index:1;min-height:100vh;padding-top:64px}
+  .page.active{display:block}
+
+  /* ===== HERO ===== */
+  #home{padding-top:0}
+  .hero{position:relative;height:100vh;min-height:600px;display:flex;align-items:center;justify-content:center;overflow:hidden}
+  .hero-video-bg{position:absolute;inset:0;background:
+    radial-gradient(circle at 30% 50%,rgba(74,32,112,0.5) 0%,transparent 50%),
+    radial-gradient(circle at 70% 30%,rgba(10,40,120,0.4) 0%,transparent 40%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='600'%3E%3Cdefs%3E%3CradialGradient id='a' cx='30%25' cy='40%25'%3E%3Cstop offset='0' stop-color='%234A2070' stop-opacity='.5'/%3E%3Cstop offset='1' stop-color='%230A0F2E' stop-opacity='0'/%3E%3C/radialGradient%3E%3C/defs%3E%3Crect width='800' height='600' fill='%230A0F2E'/%3E%3Cellipse cx='400' cy='500' rx='600' ry='200' fill='%230D1535'/%3E%3C/svg%3E");
+    background-size:cover;background-position:center}
+  .hero-particles{position:absolute;inset:0;pointer-events:none}
+  .particle{position:absolute;width:2px;height:2px;background:var(--gold);border-radius:50%;animation:float var(--dur,6s) infinite ease-in-out;opacity:0}
+  @keyframes float{0%{opacity:0;transform:translateY(0) translateX(0)}30%{opacity:.8}70%{opacity:.5}100%{opacity:0;transform:translateY(-120px) translateX(var(--dx,20px))}}
+  .hero-content{position:relative;z-index:2;text-align:center;padding:0 1rem;max-width:800px}
+  .hero-eyebrow{font-size:.7rem;letter-spacing:.25em;text-transform:uppercase;color:var(--gold);margin-bottom:1.5rem;display:flex;align-items:center;justify-content:center;gap:.6rem}
+  .hero-eyebrow::before,.hero-eyebrow::after{content:'';flex:1;max-width:60px;height:1px;background:linear-gradient(90deg,transparent,var(--gold))}
+  .hero-eyebrow::after{background:linear-gradient(270deg,transparent,var(--gold))}
+  .hero-title{font-family:'Cinzel',serif;font-size:clamp(3rem,8vw,6rem);font-weight:900;line-height:1;margin-bottom:1rem;background:linear-gradient(135deg,#fff 0%,var(--gold-bright) 40%,var(--gold) 70%,var(--purple-light) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;filter:drop-shadow(0 0 30px rgba(200,169,110,0.3))}
+  .hero-subtitle{font-size:clamp(.9rem,2vw,1.1rem);color:var(--text-muted);margin-bottom:2.5rem;font-weight:300;letter-spacing:.05em;max-width:500px;margin-left:auto;margin-right:auto}
+  .hero-buttons{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap}
+  .btn-primary{background:linear-gradient(135deg,var(--gold),#A8883E);border:none;border-radius:8px;color:#0A0F2E;font-family:'Cinzel',serif;font-size:.85rem;font-weight:700;letter-spacing:.1em;padding:.85rem 2.5rem;cursor:pointer;transition:all .3s;text-transform:uppercase}
+  .btn-primary:hover{transform:translateY(-3px);box-shadow:0 8px 32px rgba(200,169,110,0.5)}
+  .btn-outline{background:transparent;border:1px solid var(--glass-border);border-radius:8px;color:var(--gold);font-family:'Cinzel',serif;font-size:.85rem;font-weight:600;letter-spacing:.1em;padding:.85rem 2.5rem;cursor:pointer;transition:all .3s;text-transform:uppercase;backdrop-filter:blur(4px)}
+  .btn-outline:hover{border-color:var(--gold);background:rgba(200,169,110,0.1);transform:translateY(-3px)}
+  .scroll-indicator{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:.4rem;color:var(--text-muted);font-size:.7rem;letter-spacing:.15em;text-transform:uppercase;animation:bounce 2s infinite}
+  @keyframes bounce{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(6px)}}
+  .scroll-arrow{width:20px;height:20px;border-right:1px solid var(--gold);border-bottom:1px solid var(--gold);transform:rotate(45deg)}
+
+  /* ===== SECTION COMMON ===== */
+  .section{padding:5rem 2rem}
+  .section-header{text-align:center;margin-bottom:3rem}
+  .section-label{font-size:.7rem;letter-spacing:.25em;text-transform:uppercase;color:var(--gold);margin-bottom:.75rem;display:block}
+  .section-title{font-family:'Cinzel',serif;font-size:clamp(1.6rem,4vw,2.5rem);font-weight:700;color:#fff;margin-bottom:.75rem}
+  .section-line{width:60px;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:0 auto 1rem}
+  .section-desc{color:var(--text-muted);font-size:.9rem;max-width:500px;margin:0 auto;line-height:1.7}
+  .container{max-width:1200px;margin:0 auto}
+
+  /* ===== CHARACTER CARDS ===== */
+  .chars-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1.5rem}
+  .char-card{background:var(--card-bg);border:1px solid var(--glass-border);border-radius:12px;overflow:hidden;cursor:pointer;transition:all .3s;position:relative}
+  .char-card:hover{transform:translateY(-8px);border-color:var(--gold);box-shadow:0 16px 48px rgba(200,169,110,0.2)}
+  .char-artwork{height:220px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+  .char-element-bg{position:absolute;inset:0;opacity:.15}
+  .char-silhouette{width:120px;height:180px;border-radius:8px;position:relative;z-index:1;display:flex;align-items:center;justify-content:center;font-size:4rem}
+  .char-rarity{position:absolute;bottom:0;left:0;right:0;height:3px}
+  .rarity-5{background:linear-gradient(90deg,transparent,#FFD700,#FFA500,transparent)}
+  .rarity-4{background:linear-gradient(90deg,transparent,#C4A7E7,#9B72CF,transparent)}
+  .char-info{padding:1rem}
+  .char-name{font-family:'Cinzel',serif;font-size:.95rem;font-weight:600;color:#fff;margin-bottom:.3rem}
+  .char-meta{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap}
+  .element-badge{font-size:.65rem;font-weight:600;letter-spacing:.05em;padding:.2rem .5rem;border-radius:20px;text-transform:uppercase}
+  .elem-pyro{background:rgba(255,80,40,0.2);color:#FF8060;border:1px solid rgba(255,80,40,0.3)}
+  .elem-cryo{background:rgba(80,200,255,0.2);color:#80DDFF;border:1px solid rgba(80,200,255,0.3)}
+  .elem-hydro{background:rgba(40,120,255,0.2);color:#70B0FF;border:1px solid rgba(40,120,255,0.3)}
+  .elem-electro{background:rgba(170,90,255,0.2);color:#D090FF;border:1px solid rgba(170,90,255,0.3)}
+  .elem-anemo{background:rgba(80,220,180,0.2);color:#80F0D0;border:1px solid rgba(80,220,180,0.3)}
+  .elem-geo{background:rgba(220,180,50,0.2);color:#E8C060;border:1px solid rgba(220,180,50,0.3)}
+  .elem-dendro{background:rgba(80,200,80,0.2);color:#80E080;border:1px solid rgba(80,200,80,0.3)}
+  .weapon-icon{font-size:.75rem;color:var(--text-muted)}
+  .char-region{font-size:.7rem;color:var(--text-muted);margin-top:.25rem}
+  .char-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:.4rem;margin-top:.75rem;padding-top:.75rem;border-top:1px solid rgba(255,255,255,0.05)}
+  .stat-item{text-align:center}
+  .stat-label{font-size:.58rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;display:block}
+  .stat-val{font-size:.8rem;font-weight:600;color:var(--gold)}
+
+  /* ===== CHAR DETAIL ===== */
+  #char-detail{display:none}
+  .detail-hero{background:linear-gradient(135deg,rgba(74,32,112,0.4),rgba(10,15,46,0.8));border-radius:16px;padding:2rem;margin-bottom:2rem;display:flex;gap:2rem;align-items:center;flex-wrap:wrap;border:1px solid var(--glass-border)}
+  .detail-artwork{width:180px;height:240px;background:rgba(255,255,255,0.03);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:6rem;flex-shrink:0;border:1px solid var(--glass-border)}
+  .detail-info{flex:1;min-width:200px}
+  .detail-name{font-family:'Cinzel',serif;font-size:2rem;font-weight:700;color:#fff;margin-bottom:.5rem}
+  .detail-role{font-size:.8rem;letter-spacing:.15em;text-transform:uppercase;color:var(--gold);margin-bottom:1rem}
+  .detail-bio{color:var(--text-muted);font-size:.9rem;line-height:1.7;margin-bottom:1.5rem}
+  .detail-stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem}
+  .detail-stat{background:rgba(255,255,255,0.04);border-radius:8px;padding:.75rem;text-align:center;border:1px solid rgba(255,255,255,0.07)}
+  .detail-stat-label{font-size:.65rem;text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted);display:block;margin-bottom:.25rem}
+  .detail-stat-val{font-size:1.1rem;font-weight:700;color:var(--gold)}
+  .tabs{display:flex;gap:.25rem;margin-bottom:1.5rem;flex-wrap:wrap;background:rgba(255,255,255,0.03);border-radius:8px;padding:.25rem}
+  .tab{padding:.5rem 1rem;border-radius:6px;font-size:.8rem;font-weight:500;cursor:pointer;color:var(--text-muted);transition:all .2s;border:none;background:none}
+  .tab.active,.tab:hover{background:var(--glass);color:var(--gold)}
+  .tab-content{display:none}
+  .tab-content.active{display:block}
+  .constellation-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem}
+  .const-card{background:rgba(255,255,255,0.04);border:1px solid var(--glass-border);border-radius:8px;padding:1rem;display:flex;gap:.75rem}
+  .const-num{width:32px;height:32px;background:linear-gradient(135deg,var(--purple),var(--purple-light));border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Cinzel',serif;font-size:.8rem;font-weight:700;color:#fff;flex-shrink:0}
+  .const-name{font-weight:600;font-size:.85rem;color:#fff;margin-bottom:.3rem}
+  .const-desc{font-size:.78rem;color:var(--text-muted);line-height:1.5}
+  .back-btn{background:transparent;border:1px solid var(--glass-border);border-radius:8px;color:var(--gold);font-size:.8rem;padding:.5rem 1.2rem;cursor:pointer;margin-bottom:1.5rem;transition:all .2s;display:inline-flex;align-items:center;gap:.4rem}
+  .back-btn:hover{border-color:var(--gold);background:rgba(200,169,110,0.08)}
+
+  /* ===== NEWS CARDS ===== */
+  .news-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.5rem}
+  .news-card{background:var(--card-bg);border:1px solid var(--glass-border);border-radius:12px;overflow:hidden;cursor:pointer;transition:all .3s}
+  .news-card:hover{transform:translateY(-4px);border-color:rgba(200,169,110,0.4)}
+  .news-img{height:160px;display:flex;align-items:center;justify-content:center;font-size:3rem;position:relative;overflow:hidden}
+  .news-body{padding:1.25rem}
+  .news-tag{font-size:.65rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:.5rem;display:block}
+  .news-title{font-family:'Cinzel',serif;font-size:.95rem;font-weight:600;color:#fff;margin-bottom:.5rem;line-height:1.4}
+  .news-excerpt{font-size:.8rem;color:var(--text-muted);line-height:1.6}
+  .news-date{font-size:.72rem;color:var(--text-muted);margin-top:.75rem}
+
+  /* ===== REGIONS ===== */
+  .regions-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.5rem}
+  .region-card{background:var(--card-bg);border:1px solid var(--glass-border);border-radius:16px;overflow:hidden;cursor:pointer;transition:all .3s;position:relative}
+  .region-card:hover{transform:translateY(-6px);box-shadow:0 12px 40px rgba(0,0,0,0.4)}
+  .region-banner{height:160px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:3rem;position:relative}
+  .region-name{font-family:'Cinzel',serif;font-size:1.3rem;font-weight:700;color:#fff;margin-top:.5rem}
+  .region-info{padding:1.25rem}
+  .region-archon{font-size:.78rem;color:var(--gold);margin-bottom:.5rem}
+  .region-desc{font-size:.8rem;color:var(--text-muted);line-height:1.6}
+  .region-tags{display:flex;gap:.4rem;flex-wrap:wrap;margin-top:.75rem}
+  .region-tag{font-size:.65rem;padding:.2rem .5rem;border-radius:12px;background:rgba(255,255,255,0.05);color:var(--text-muted);border:1px solid rgba(255,255,255,0.08)}
+
+  /* ===== WEAPONS ===== */
+  .weapons-filter{display:flex;gap:.5rem;margin-bottom:2rem;flex-wrap:wrap}
+  .filter-btn{background:var(--glass);border:1px solid var(--glass-border);border-radius:20px;color:var(--text-muted);font-size:.75rem;padding:.4rem 1rem;cursor:pointer;transition:all .2s}
+  .filter-btn.active,.filter-btn:hover{background:rgba(200,169,110,0.15);border-color:var(--gold);color:var(--gold)}
+  .weapons-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1.5rem}
+  .weapon-card{background:var(--card-bg);border:1px solid var(--glass-border);border-radius:12px;padding:1.25rem;transition:all .3s;cursor:pointer}
+  .weapon-card:hover{transform:translateY(-4px);border-color:rgba(200,169,110,0.4)}
+  .weapon-icon-big{font-size:3rem;margin-bottom:.75rem;text-align:center}
+  .weapon-name{font-family:'Cinzel',serif;font-size:.9rem;font-weight:600;color:#fff;margin-bottom:.3rem}
+  .weapon-type-badge{display:inline-block;font-size:.65rem;padding:.2rem .6rem;border-radius:12px;background:rgba(123,68,184,0.2);color:var(--purple-light);border:1px solid rgba(123,68,184,0.3);margin-bottom:.5rem}
+  .weapon-stat{font-size:.78rem;color:var(--text-muted);margin:.2rem 0}
+  .weapon-passive{font-size:.75rem;color:var(--gold);margin-top:.5rem;font-style:italic;line-height:1.5}
+
+  /* ===== MAP ===== */
+  .map-container{background:var(--card-bg);border:1px solid var(--glass-border);border-radius:16px;overflow:hidden;position:relative}
+  .map-header{padding:1.5rem;border-bottom:1px solid var(--glass-border);display:flex;align-items:center;gap:1rem;flex-wrap:wrap}
+  .map-title{font-family:'Cinzel',serif;font-size:1.2rem;font-weight:600;color:#fff}
+  .map-filters{display:flex;gap:.5rem;flex-wrap:wrap;margin-left:auto}
+  .map-filter-btn{background:var(--glass);border:1px solid var(--glass-border);border-radius:16px;color:var(--text-muted);font-size:.7rem;padding:.3rem .7rem;cursor:pointer;transition:all .2s}
+  .map-filter-btn.active{background:rgba(200,169,110,0.15);border-color:var(--gold);color:var(--gold)}
+  .map-svg-wrap{padding:1rem;overflow:auto}
+  .map-svg{width:100%;max-width:800px;margin:0 auto;display:block}
+  .map-marker{cursor:pointer;transition:all .2s}
+  .map-marker:hover circle{r:12;filter:drop-shadow(0 0 8px currentColor)}
+  .map-legend{padding:1rem 1.5rem;border-top:1px solid var(--glass-border);display:flex;gap:1.5rem;flex-wrap:wrap}
+  .legend-item{display:flex;align-items:center;gap:.4rem;font-size:.75rem;color:var(--text-muted)}
+  .legend-dot{width:10px;height:10px;border-radius:50%}
+
+  /* ===== GALLERY ===== */
+  .gallery-filters{display:flex;gap:.5rem;margin-bottom:2rem;flex-wrap:wrap}
+  .gallery-grid{columns:3 200px;gap:1rem}
+  .gallery-item{break-inside:avoid;margin-bottom:1rem;border-radius:8px;overflow:hidden;cursor:pointer;transition:all .3s;border:1px solid transparent;display:block;position:relative}
+  .gallery-item:hover{border-color:var(--gold);transform:scale(1.02)}
+  .gallery-img{width:100%;display:block;background:var(--card-bg);border-radius:8px;min-height:120px;display:flex;align-items:center;justify-content:center;font-size:2rem;aspect-ratio:var(--ratio,4/3)}
+  .gallery-overlay{position:absolute;inset:0;background:linear-gradient(transparent 60%,rgba(0,0,0,0.8));opacity:0;transition:opacity .3s;border-radius:8px;display:flex;align-items:flex-end;padding:.75rem}
+  .gallery-item:hover .gallery-overlay{opacity:1}
+  .gallery-label{color:#fff;font-size:.8rem;font-weight:500}
+
+  /* ===== ELEMENTS PAGE ===== */
+  .elements-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1.5rem}
+  .element-card{background:var(--card-bg);border:1px solid var(--glass-border);border-radius:16px;padding:2rem;text-align:center;transition:all .3s;cursor:pointer}
+  .element-card:hover{transform:translateY(-6px)}
+  .element-icon-big{font-size:4rem;margin-bottom:1rem;display:block}
+  .element-name{font-family:'Cinzel',serif;font-size:1.2rem;font-weight:700;margin-bottom:.5rem}
+  .element-desc{font-size:.82rem;color:var(--text-muted);line-height:1.6;margin-bottom:1rem}
+  .reaction-list{text-align:left}
+  .reaction-item{font-size:.75rem;color:var(--text-muted);padding:.3rem 0;border-bottom:1px solid rgba(255,255,255,0.04);display:flex;justify-content:space-between}
+  .reaction-name{color:var(--text-main);font-weight:500}
+
+  /* ===== FOOTER ===== */
+  footer{background:rgba(5,8,18,0.95);border-top:1px solid var(--glass-border);padding:3rem 2rem 2rem;margin-top:4rem;position:relative;z-index:1}
+  .footer-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:2rem;max-width:1200px;margin:0 auto 2rem}
+  .footer-brand{grid-column:1/-1}
+  @media(min-width:600px){.footer-brand{grid-column:auto}}
+  .footer-logo-text{font-family:'Cinzel',serif;font-size:1.4rem;font-weight:700;background:linear-gradient(135deg,var(--gold),var(--purple-light));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.75rem}
+  .footer-tagline{font-size:.82rem;color:var(--text-muted);line-height:1.6;max-width:220px}
+  .footer-col-title{font-family:'Cinzel',serif;font-size:.8rem;font-weight:600;color:var(--gold);letter-spacing:.1em;text-transform:uppercase;margin-bottom:1rem}
+  .footer-link{display:block;font-size:.8rem;color:var(--text-muted);margin-bottom:.4rem;cursor:pointer;transition:color .2s}
+  .footer-link:hover{color:var(--gold)}
+  .footer-bottom{max-width:1200px;margin:0 auto;padding-top:1.5rem;border-top:1px solid rgba(255,255,255,0.06);display:flex;justify-content:space-between;align-items:center;flex-wrap:gap;gap:.5rem}
+  .footer-copyright{font-size:.75rem;color:var(--text-muted)}
+  .footer-socials{display:flex;gap:.75rem}
+  .social-btn{width:32px;height:32px;background:var(--glass);border:1px solid var(--glass-border);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:.85rem;cursor:pointer;transition:all .2s;color:var(--text-muted)}
+  .social-btn:hover{border-color:var(--gold);color:var(--gold)}
+
+  /* ===== ABOUT ===== */
+  .about-hero{text-align:center;padding:3rem 1rem;background:linear-gradient(135deg,rgba(74,32,112,0.2),rgba(10,15,46,0.6));border-radius:16px;border:1px solid var(--glass-border);margin-bottom:3rem}
+  .about-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.5rem;margin-bottom:3rem}
+  .about-card{background:var(--card-bg);border:1px solid var(--glass-border);border-radius:12px;padding:2rem}
+  .about-card-icon{font-size:2.5rem;margin-bottom:1rem}
+  .about-card-title{font-family:'Cinzel',serif;font-size:1rem;font-weight:600;color:#fff;margin-bottom:.75rem}
+  .about-card-text{font-size:.83rem;color:var(--text-muted);line-height:1.7}
+
+  /* ===== EVENTS ===== */
+  .events-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:1.5rem}
+  .event-card{background:var(--card-bg);border:1px solid var(--glass-border);border-radius:12px;overflow:hidden;transition:all .3s}
+  .event-card:hover{transform:translateY(-4px);border-color:rgba(200,169,110,0.4)}
+  .event-banner{height:120px;display:flex;align-items:center;justify-content:center;font-size:2.5rem;position:relative}
+  .event-body{padding:1.25rem}
+  .event-status{display:inline-block;font-size:.65rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:.25rem .6rem;border-radius:12px;margin-bottom:.5rem}
+  .status-active{background:rgba(80,200,80,0.2);color:#80E080;border:1px solid rgba(80,200,80,0.3)}
+  .status-upcoming{background:rgba(200,169,110,0.2);color:var(--gold);border:1px solid rgba(200,169,110,0.3)}
+  .status-ended{background:rgba(100,100,100,0.2);color:#888;border:1px solid rgba(100,100,100,0.3)}
+  .event-name{font-family:'Cinzel',serif;font-size:.95rem;font-weight:600;color:#fff;margin-bottom:.5rem}
+  .event-desc{font-size:.8rem;color:var(--text-muted);line-height:1.6;margin-bottom:.75rem}
+  .event-dates{font-size:.75rem;color:var(--gold)}
+
+  /* ===== SCROLLBAR ===== */
+  ::-webkit-scrollbar{width:5px;height:5px}
+  ::-webkit-scrollbar-track{background:rgba(255,255,255,0.02)}
+  ::-webkit-scrollbar-thumb{background:var(--glass-border);border-radius:10px}
+
+  /* ===== GLOW CURSOR ===== */
+  .cursor-glow{position:fixed;width:300px;height:300px;pointer-events:none;z-index:999;border-radius:50%;background:radial-gradient(circle,rgba(123,68,184,0.06) 0%,transparent 70%);transform:translate(-50%,-50%);transition:left .1s,top .1s;mix-blend-mode:screen}
+
+  /* ===== BANNER SECTION (HOME) ===== */
+  .banners-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1.5rem}
+  .banner-card{background:var(--card-bg);border:1px solid var(--glass-border);border-radius:12px;overflow:hidden;cursor:pointer;transition:all .3s;position:relative}
+  .banner-card:hover{transform:translateY(-4px);border-color:rgba(200,169,110,0.4)}
+  .banner-artwork{height:180px;display:flex;align-items:center;justify-content:center;font-size:3.5rem;position:relative;overflow:hidden}
+  .banner-new{position:absolute;top:.75rem;right:.75rem;background:linear-gradient(135deg,var(--gold),#A8883E);color:#0A0F2E;font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:.25rem .6rem;border-radius:12px}
+  .banner-info{padding:1rem}
+  .banner-type{font-size:.65rem;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.25rem;display:block}
+  .banner-name{font-family:'Cinzel',serif;font-size:.9rem;font-weight:600;color:#fff;margin-bottom:.25rem}
+  .banner-chars{font-size:.75rem;color:var(--gold)}
+  .banner-ends{font-size:.7rem;color:var(--text-muted);margin-top:.25rem}
+
+  .char-filter-bar{display:flex;gap:.5rem;margin-bottom:1.5rem;flex-wrap:wrap}
+
+  /* ===== NAV DROPDOWN ===== */
+  .nav-dropdown {
+    position: relative;
+    display: inline-block;
+  }
+  .dropdown-menu {
+    visibility: hidden;
+    opacity: 0;
+    position: absolute;
+    top: calc(100% + 5px);
+    left: 50%;
+    transform: translateX(-50%) translateY(10px);
+    background: rgba(10, 15, 46, 0.96);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    padding: 1.2rem;
+    z-index: 200;
+    width: 480px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.6rem;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), 0 0 30px rgba(123, 68, 184, 0.2);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    pointer-events: none;
+  }
+  .nav-dropdown:hover .dropdown-menu {
+    visibility: visible;
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+    pointer-events: auto;
+  }
+  .dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.4rem 0.6rem;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    border: 1px solid transparent;
+  }
+  .dropdown-item:hover {
+    background: rgba(200, 169, 110, 0.1);
+    color: var(--gold);
+    border-color: rgba(200, 169, 110, 0.25);
+    transform: translateY(-1px);
+  }
+  .dropdown-item .char-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+  }
+
+  /* ===== ENHANCED DETAILS PAGE ===== */
+  .detail-meta-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1rem;
+    margin: 1.5rem 0;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 1.2rem;
+    border-radius: 10px;
+  }
+  .detail-meta-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+  .detail-meta-label {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    letter-spacing: 0.08em;
+  }
+  .detail-meta-value {
+    font-size: 0.85rem;
+    color: var(--text-main);
+    font-weight: 500;
+  }
+
+  .materials-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin-top: 1rem;
+  }
+  @media(max-width: 768px) {
+    .materials-container {
+      grid-template-columns: 1fr;
+    }
+  }
+  .materials-block {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    padding: 1.25rem;
+  }
+  .materials-title {
+    font-family: 'Cinzel', serif;
+    font-size: 1rem;
+    color: var(--gold);
+    margin-bottom: 0.8rem;
+    border-bottom: 1px solid rgba(200, 169, 110, 0.15);
+    padding-bottom: 0.4rem;
+  }
+  .materials-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .material-badge {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: var(--text-main);
+    font-size: 0.75rem;
+    padding: 0.35rem 0.75rem;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+  }
+
+  .teams-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.25rem;
+  }
+  .team-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    padding: 1.25rem;
+    transition: all 0.3s;
+  }
+  .team-card:hover {
+    border-color: var(--gold);
+    background: rgba(200, 169, 110, 0.04);
+  }
+  .team-name {
+    font-family: 'Cinzel', serif;
+    font-size: 0.95rem;
+    color: var(--gold);
+    margin-bottom: 0.8rem;
+  }
+  .team-members {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.5rem;
+  }
+  .team-member {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    background: rgba(255, 255, 255, 0.04);
+    padding: 0.4rem 0.2rem;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+  }
+  .team-member-name {
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    margin-top: 0.2rem;
+    word-break: break-all;
+  }
+
+  .voice-actors-block {
+    margin-top: 2rem;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    padding: 1.25rem;
+  }
+  .voice-actors-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+  }
+  @media(max-width: 576px) {
+    .voice-actors-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  .va-item {
+    display: flex;
+    flex-direction: column;
+  }
+  .va-lang {
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    color: var(--gold);
+    letter-spacing: 0.05em;
+  }
+  .va-name {
+    font-size: 0.8rem;
+    color: var(--text-main);
+    font-weight: 500;
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor-glow" id="cursorGlow"></div>
+<div class="bg-gradient"></div>
+<div class="bg-stars" id="bgStars"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo" onclick="showPage('home')">
+    <div class="logo-gem"></div>
+    <span class="logo-text">Teyvat Wiki</span>
+  </div>
+  <div class="nav-links">
+    <span class="nav-link active" onclick="showPage('home',this)">Home</span>
+    <div class="nav-dropdown">
+      <span class="nav-link nav-link-chars" onclick="showPage('characters',this)">Characters</span>
+      <div class="dropdown-menu" id="charsDropdownMenu"></div>
+    </div>
+    <span class="nav-link" onclick="showPage('weapons',this)">Weapons</span>
+    <span class="nav-link" onclick="showPage('elements',this)">Elements</span>
+    <span class="nav-link" onclick="showPage('regions',this)">Regions</span>
+    <span class="nav-link" onclick="showPage('events',this)">Events</span>
+    <span class="nav-link" onclick="showPage('news',this)">News</span>
+    <span class="nav-link" onclick="showPage('gallery',this)">Gallery</span>
+    <span class="nav-link" onclick="showPage('map',this)">Map</span>
+    <span class="nav-link" onclick="showPage('about',this)">About</span>
+  </div>
+  <div class="nav-right">
+    <input class="nav-search" type="text" placeholder="🔍 Search Teyvat..." id="searchInput" oninput="handleSearch(this.value)" onfocus="showPage('search',null)">
+    <button class="nav-btn" onclick="showPage('characters',null)">▶ Explore</button>
+  </div>
+</nav>
+
+<!-- HOME PAGE -->
+<div class="page active" id="home">
+  <div class="hero">
+    <div class="hero-video-bg"></div>
+    <div class="hero-particles" id="heroParticles"></div>
+    <div class="hero-content">
+      <div class="hero-eyebrow">Explore the World of</div>
+      <h1 class="hero-title">TEYVAT</h1>
+      <p class="hero-subtitle">Embark on a journey across seven nations, each ruled by an archon and imbued with elemental power beyond imagination.</p>
+      <div class="hero-buttons">
+        <button class="btn-primary" onclick="showPage('characters',null)">✦ Explore Now</button>
+        <button class="btn-outline" onclick="showPage('map',null)">⊕ Open Map</button>
+      </div>
+    </div>
+    <div class="scroll-indicator"><div class="scroll-arrow"></div><span>Scroll</span></div>
+  </div>
+
+  <!-- Latest Banners -->
+  <div class="section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-label">Current & Upcoming</span>
+        <h2 class="section-title">Wish Banners</h2>
+        <div class="section-line"></div>
+        <p class="section-desc">The latest character and weapon event wishes in Teyvat</p>
+      </div>
+      <div class="banners-grid" id="bannersGrid"></div>
+    </div>
+  </div>
+
+  <!-- Featured Characters -->
+  <div class="section" style="background:rgba(255,255,255,0.01);border-top:1px solid rgba(255,255,255,0.04);border-bottom:1px solid rgba(255,255,255,0.04)">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-label">Meet the Heroes</span>
+        <h2 class="section-title">Featured Characters</h2>
+        <div class="section-line"></div>
+      </div>
+      <div class="chars-grid" id="featuredCharsGrid"></div>
+      <div style="text-align:center;margin-top:2rem">
+        <button class="btn-outline" onclick="showPage('characters',null)">View All Characters →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- News -->
+  <div class="section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-label">Latest Updates</span>
+        <h2 class="section-title">News & Events</h2>
+        <div class="section-line"></div>
+      </div>
+      <div class="news-grid" id="homeNewsGrid"></div>
+    </div>
+  </div>
+</div>
+
+<!-- CHARACTERS PAGE -->
+<div class="page" id="characters">
+  <div class="section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-label">The Chosen of Teyvat</span>
+        <h2 class="section-title">Character Database</h2>
+        <div class="section-line"></div>
+        <p class="section-desc">Discover every character's lore, abilities, and optimal builds</p>
+      </div>
+      <div class="char-filter-bar" id="charFilters"></div>
+      <div class="chars-grid" id="allCharsGrid"></div>
+    </div>
+  </div>
+</div>
+
+<!-- CHAR DETAIL PAGE -->
+<div class="page" id="char-detail">
+  <div class="section">
+    <div class="container">
+      <button class="back-btn" onclick="showPage('characters',null)">← Back to Characters</button>
+      <div id="charDetailContent"></div>
+    </div>
+  </div>
+</div>
+
+<!-- WEAPONS PAGE -->
+<div class="page" id="weapons">
+  <div class="section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-label">Armaments of Teyvat</span>
+        <h2 class="section-title">Weapons</h2>
+        <div class="section-line"></div>
+      </div>
+      <div class="weapons-filter" id="weaponFilters"></div>
+      <div class="weapons-grid" id="weaponsGrid"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ELEMENTS PAGE -->
+<div class="page" id="elements">
+  <div class="section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-label">The Seven Elements</span>
+        <h2 class="section-title">Elemental System</h2>
+        <div class="section-line"></div>
+        <p class="section-desc">Master elemental reactions to unleash devastating combinations</p>
+      </div>
+      <div class="elements-grid" id="elementsGrid"></div>
+    </div>
+  </div>
+</div>
+
+<!-- REGIONS PAGE -->
+<div class="page" id="regions">
+  <div class="section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-label">Lands of the Seven</span>
+        <h2 class="section-title">Regions of Teyvat</h2>
+        <div class="section-line"></div>
+      </div>
+      <div class="regions-grid" id="regionsGrid"></div>
+    </div>
+  </div>
+</div>
+
+<!-- EVENTS PAGE -->
+<div class="page" id="events">
+  <div class="section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-label">Live in Teyvat</span>
+        <h2 class="section-title">Events</h2>
+        <div class="section-line"></div>
+      </div>
+      <div class="events-grid" id="eventsGrid"></div>
+    </div>
+  </div>
+</div>
+
+<!-- NEWS PAGE -->
+<div class="page" id="news">
+  <div class="section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-label">From the Traveler's Gazette</span>
+        <h2 class="section-title">Latest News</h2>
+        <div class="section-line"></div>
+      </div>
+      <div class="news-grid" id="newsGrid"></div>
+    </div>
+  </div>
+</div>
+
+<!-- GALLERY PAGE -->
+<div class="page" id="gallery">
+  <div class="section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-label">Visual Archive</span>
+        <h2 class="section-title">Gallery</h2>
+        <div class="section-line"></div>
+      </div>
+      <div class="gallery-filters" id="galleryFilters"></div>
+      <div class="gallery-grid" id="galleryGrid"></div>
+    </div>
+  </div>
+</div>
+
+<!-- MAP PAGE -->
+<div class="page" id="map">
+  <div class="section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-label">Navigate the World</span>
+        <h2 class="section-title">Interactive Map</h2>
+        <div class="section-line"></div>
+      </div>
+      <div class="map-container">
+        <div class="map-header">
+          <span class="map-title">Teyvat World Map</span>
+          <div class="map-filters" id="mapFilters"></div>
+        </div>
+        <div class="map-svg-wrap">
+          <svg class="map-svg" viewBox="0 0 800 500" xmlns="http://www.w3.org/2000/svg" id="mapSvg"></svg>
+        </div>
+        <div class="map-legend" id="mapLegend"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ABOUT PAGE -->
+<div class="page" id="about">
+  <div class="section">
+    <div class="container">
+      <div class="about-hero">
+        <div class="logo-gem" style="width:60px;height:60px;margin:0 auto 1.5rem;display:block"></div>
+        <h1 style="font-family:'Cinzel',serif;font-size:2.5rem;font-weight:900;background:linear-gradient(135deg,var(--gold),var(--gold-bright));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:1rem">Teyvat Wiki</h1>
+        <p style="color:var(--text-muted);max-width:500px;margin:0 auto;line-height:1.7;font-size:.95rem">The most comprehensive Genshin Impact database, bringing the world of Teyvat to your fingertips with detailed character builds, lore, maps, and more.</p>
+      </div>
+      <div class="about-grid" id="aboutGrid"></div>
+    </div>
+  </div>
+</div>
+
+<!-- SEARCH PAGE -->
+<div class="page" id="search">
+  <div class="section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-label">Find Anything</span>
+        <h2 class="section-title">Search Results</h2>
+        <div class="section-line"></div>
+      </div>
+      <div id="searchResults" class="chars-grid"></div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer id="mainFooter">
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div class="footer-logo-text">Teyvat Wiki</div>
+      <p class="footer-tagline">Your ultimate guide to the world of Teyvat and Genshin Impact.</p>
+    </div>
+    <div>
+      <div class="footer-col-title">Explore</div>
+      <span class="footer-link" onclick="showPage('characters',null)">Characters</span>
+      <span class="footer-link" onclick="showPage('weapons',null)">Weapons</span>
+      <span class="footer-link" onclick="showPage('elements',null)">Elements</span>
+      <span class="footer-link" onclick="showPage('regions',null)">Regions</span>
+    </div>
+    <div>
+      <div class="footer-col-title">Content</div>
+      <span class="footer-link" onclick="showPage('news',null)">News</span>
+      <span class="footer-link" onclick="showPage('events',null)">Events</span>
+      <span class="footer-link" onclick="showPage('gallery',null)">Gallery</span>
+      <span class="footer-link" onclick="showPage('map',null)">Map</span>
+    </div>
+    <div>
+      <div class="footer-col-title">Info</div>
+      <span class="footer-link" onclick="showPage('about',null)">About</span>
+      <span class="footer-link">Privacy Policy</span>
+      <span class="footer-link">Terms of Use</span>
+      <span class="footer-link">Contact</span>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span class="footer-copyright">© 2024 Teyvat Wiki · Fan site, not affiliated with miHoYo</span>
+    <div class="footer-socials">
+      <div class="social-btn">𝕏</div>
+      <div class="social-btn">▶</div>
+      <div class="social-btn">📘</div>
+      <div class="social-btn">🎮</div>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ============ DATA ============
+const CHARS = [
+  {
+    id: 1,
+    name: "Diluc",
+    title: "The Dark Side of Dawn",
+    rarity: 5,
+    element: "Pyro",
+    weapon: "Claymore",
+    nation: "Mondstadt",
+    birthday: "April 30",
+    constellation: "Noctua",
+    affiliation: "Dawn Winery",
+    gender: "Male",
+    model: "Tall Male",
+    releaseVersion: "1.0",
+    emoji: "🦅",
+    description: "The wealthy owner of Dawn Winery and one of Mondstadt's strongest protectors. Though he dislikes the Knights of Favonius' methods, he secretly safeguards the city from the shadows.",
+    stats: { hp: 12981, atk: 335, def: 784 },
+    talents: {
+      normalAttack: "Tempered Sword",
+      elementalSkill: "Searing Onslaught",
+      elementalBurst: "Dawn",
+      passive1: "Relentless",
+      passive2: "Blessing of Phoenix",
+      passive3: "Tradition of the Dawn Knight"
+    },
+    constellations: [
+      "Conviction",
+      "Searing Ember",
+      "Fire and Steel",
+      "Flowing Flame",
+      "Phoenix, Harbinger of Dawn",
+      "Flaming Sword, Nemesis of Dark"
+    ],
+    recommendedWeapons: [
+      "Wolf's Gravestone",
+      "Redhorn Stonethresher",
+      "Beacon of the Reed Sea",
+      "Serpent Spine"
+    ],
+    recommendedArtifacts: [
+      "Crimson Witch of Flames",
+      "Gladiator's Finale",
+      "Marechaussee Hunter"
+    ],
+    bestTeams: [
+      { name: "Vaporize Team", members: ["Diluc", "Xingqiu", "Bennett", "Kazuha"] },
+      { name: "Melt Team", members: ["Diluc", "Rosaria", "Bennett", "Zhongli"] }
+    ],
+    ascensionMaterials: [
+      "Agnidus Agate",
+      "Everflame Seed",
+      "Small Lamp Grass",
+      "Recruit's Insignia"
+    ],
+    talentMaterials: [
+      "Teachings of Resistance",
+      "Guide to Resistance",
+      "Philosophies of Resistance",
+      "Dvalin's Plume",
+      "Crown of Insight"
+    ],
+    voiceActors: {
+      english: "Sean Chiplock",
+      japanese: "Kensho Ono",
+      chinese: "Ma Yang",
+      korean: "Choi Seung-hoon"
+    },
+    images: {
+      icon: "/images/characters/diluc/icon.png",
+      splash: "/images/characters/diluc/splash.webp",
+      portrait: "/images/characters/diluc/portrait.png"
+    }
+  },
+  {
+    id: 2,
+    name: "Hu Tao",
+    title: "Fragrance in Thaw",
+    rarity: 5,
+    element: "Pyro",
+    weapon: "Polearm",
+    nation: "Liyue",
+    birthday: "July 15",
+    constellation: "Papilio Charontis",
+    affiliation: "Wangsheng Funeral Parlor",
+    gender: "Female",
+    model: "Medium Female",
+    releaseVersion: "1.3",
+    emoji: "🦋",
+    description: "The 77th Director of the Wangsheng Funeral Parlor. She is a lively and eccentric young poet who takes her funeral duties very seriously.",
+    stats: { hp: 15552, atk: 106, def: 876 },
+    talents: {
+      normalAttack: "Secret Spear of Wangsheng",
+      elementalSkill: "Guide to Afterlife",
+      elementalBurst: "Spirit Soother",
+      passive1: "Flutter By",
+      passive2: "Sanguine Rouge",
+      passive3: "The More the Merrier"
+    },
+    constellations: [
+      "Crimson Bouquet",
+      "Ominous Rainfall",
+      "Lingering Carmine",
+      "Garden of Eternal Rest",
+      "Floral Incense",
+      "Butterfly's Embrace"
+    ],
+    recommendedWeapons: [
+      "Staff of Homa",
+      "Primordial Jade Winged-Spear",
+      "Deathmatch",
+      "Dragon's Bane"
+    ],
+    recommendedArtifacts: [
+      "Crimson Witch of Flames",
+      "Shimenawa's Reminiscence",
+      "Gilded Dreams"
+    ],
+    bestTeams: [
+      { name: "Double Hydro", members: ["Hu Tao", "Yelan", "Xingqiu", "Zhongli"] },
+      { name: "Vaporize Comp", members: ["Hu Tao", "Xingqiu", "Kazuha", "Bennett"] }
+    ],
+    ascensionMaterials: [
+      "Agnidus Agate",
+      "Juvenile Jade",
+      "Silk Flower",
+      "Whopperflower Nectar"
+    ],
+    talentMaterials: [
+      "Teachings of Diligence",
+      "Guide to Diligence",
+      "Philosophies of Diligence",
+      "Shard of a Foul Legacy",
+      "Crown of Insight"
+    ],
+    voiceActors: {
+      english: "Brianna Knickerbocker",
+      japanese: "Rie Takahashi",
+      chinese: "Tao Dian",
+      korean: "Kim Ha-ru"
+    },
+    images: {
+      icon: "/images/characters/hutao/icon.png",
+      splash: "/images/characters/hutao/splash.webp",
+      portrait: "/images/characters/hutao/portrait.png"
+    }
+  },
+  {
+    id: 3,
+    name: "Raiden Shogun",
+    title: "Plane of Euthymia",
+    rarity: 5,
+    element: "Electro",
+    weapon: "Polearm",
+    nation: "Inazuma",
+    birthday: "June 26",
+    constellation: "Imperatrix Umbrosa",
+    affiliation: "Inazuma Shogunate",
+    gender: "Female",
+    model: "Tall Female",
+    releaseVersion: "2.1",
+    emoji: "⚡",
+    description: "Her Excellency, the Almighty Shogun, who promised the people of Inazuma an unchanging Eternity.",
+    stats: { hp: 12907, atk: 337, def: 789 },
+    talents: {
+      normalAttack: "Origin",
+      elementalSkill: "Transcendence: Baleful Omen",
+      elementalBurst: "Secret Art: Musou Shinsetsu",
+      passive1: "Wishes Unnumbered",
+      passive2: "Enlightened One",
+      passive3: "All-Preserver"
+    },
+    constellations: [
+      "Ominous Inscription",
+      "Steelbreaker",
+      "Shinkage Bygones",
+      "Pledge of Propriety",
+      "Shogun's Descent",
+      "Wishbearer"
+    ],
+    recommendedWeapons: [
+      "Engulfing Lightning",
+      "Staff of Homa",
+      "The Catch",
+      "Wavebreaker's Fin"
+    ],
+    recommendedArtifacts: [
+      "Emblem of Severed Fate",
+      "Gilded Dreams",
+      "Thundering Fury"
+    ],
+    bestTeams: [
+      { name: "Raiden National", members: ["Raiden Shogun", "Xingqiu", "Bennett", "Xiangling"] },
+      { name: "Hypercarry", members: ["Raiden Shogun", "Kujou Sara", "Kazuha", "Bennett"] }
+    ],
+    ascensionMaterials: [
+      "Vajrada Amethyst",
+      "Storm Beads",
+      "Amakumo Fruit",
+      "Old Handguard"
+    ],
+    talentMaterials: [
+      "Teachings of Light",
+      "Guide to Light",
+      "Philosophies of Light",
+      "Melted Moment",
+      "Crown of Insight"
+    ],
+    voiceActors: {
+      english: "Anne Yatco",
+      japanese: "Miyuki Sawashiro",
+      chinese: "Jiang Li",
+      korean: "Park Ji-yoon"
+    },
+    images: {
+      icon: "/images/characters/raiden/icon.png",
+      splash: "/images/characters/raiden/splash.webp",
+      portrait: "/images/characters/raiden/portrait.png"
+    }
+  },
+  {
+    id: 4,
+    name: "Zhongli",
+    title: "Vago Mundo",
+    rarity: 5,
+    element: "Geo",
+    weapon: "Polearm",
+    nation: "Liyue",
+    birthday: "December 31",
+    constellation: "Lapis Dei",
+    affiliation: "Wangsheng Funeral Parlor",
+    gender: "Male",
+    model: "Tall Male",
+    releaseVersion: "1.1",
+    emoji: "🪨",
+    description: "A mysterious consultant of the Wangsheng Funeral Parlor. Extremely knowledgeable in all things.",
+    stats: { hp: 14695, atk: 251, def: 738 },
+    talents: {
+      normalAttack: "Rain of Stone",
+      elementalSkill: "Dominus Lapidis",
+      elementalBurst: "Planet Befall",
+      passive1: "Resonant Waves",
+      passive2: "Dominance of Earth",
+      passive3: "Arcanum of Crystal"
+    },
+    constellations: [
+      "Rock, the Backbone of Earth",
+      "Stone, the Cradle of Jade",
+      "Jade, Shimmering through Darkness",
+      "Topaz, Unbreakable and Fearless",
+      "Lazuli, Herald of the Order",
+      "Chrysos, Bounty of Dominator"
+    ],
+    recommendedWeapons: [
+      "Staff of Homa",
+      "Black Tassel",
+      "Favonius Lance",
+      "Primordial Jade Winged-Spear"
+    ],
+    recommendedArtifacts: [
+      "Tenacity of the Millelith",
+      "Noblesse Oblige",
+      "Archaic Petra"
+    ],
+    bestTeams: [
+      { name: "Hu Tao Shield", members: ["Hu Tao", "Xingqiu", "Yelan", "Zhongli"] },
+      { name: "Itto Mono Geo", members: ["Arataki Itto", "Gorou", "Albedo", "Zhongli"] }
+    ],
+    ascensionMaterials: [
+      "Prithiva Topaz",
+      "Basalt Pillar",
+      "Cor Lapis",
+      "Slime Condensate"
+    ],
+    talentMaterials: [
+      "Teachings of Gold",
+      "Guide to Gold",
+      "Philosophies of Gold",
+      "Tusk of Monoceros Caeli",
+      "Crown of Insight"
+    ],
+    voiceActors: {
+      english: "Keith Silverstein",
+      japanese: "Tomoaki Maeno",
+      chinese: "Peng Bo",
+      korean: "Pyo Yeong-jae"
+    },
+    images: {
+      icon: "/images/characters/zhongli/icon.png",
+      splash: "/images/characters/zhongli/splash.webp",
+      portrait: "/images/characters/zhongli/portrait.png"
+    }
+  },
+  {
+    id: 5,
+    name: "Ganyu",
+    title: "Plenilune Gaze",
+    rarity: 5,
+    element: "Cryo",
+    weapon: "Bow",
+    nation: "Liyue",
+    birthday: "December 2",
+    constellation: "Sinae Unicornis",
+    affiliation: "Yuehai Pavilion",
+    gender: "Female",
+    model: "Medium Female",
+    releaseVersion: "1.2",
+    emoji: "❄️",
+    description: "The secretary to the Liyue Qixing. The blood of the Qilin, an illuminated beast, flows in her veins.",
+    stats: { hp: 9797, atk: 335, def: 630 },
+    talents: {
+      normalAttack: "Liutian Archery",
+      elementalSkill: "Trail of the Qilin",
+      elementalBurst: "Celestial Shower",
+      passive1: "Undivided Heart",
+      passive2: "Harmony Between Heaven and Earth",
+      passive3: "Preserved for the Hunt"
+    },
+    constellations: [
+      "Dew-Drinker",
+      "The Auspicious",
+      "Cloud-Strider",
+      "Westward Sojourn",
+      "The Merciful",
+      "The Clement"
+    ],
+    recommendedWeapons: [
+      "Amos' Bow",
+      "Aqua Simulacra",
+      "Prototype Crescent",
+      "Hama-Yumi"
+    ],
+    recommendedArtifacts: [
+      "Wanderer's Troupe",
+      "Blizzard Strayer",
+      "Shimenawa's Reminiscence"
+    ],
+    bestTeams: [
+      { name: "Melt Ganyu", members: ["Ganyu", "Xiangling", "Bennett", "Zhongli"] },
+      { name: "Morgana Freeze", members: ["Ganyu", "Mona", "Venti", "Diona"] }
+    ],
+    ascensionMaterials: [
+      "Shivada Jade",
+      "Hoarfrost Core",
+      "Qingxin",
+      "Whopperflower Nectar"
+    ],
+    talentMaterials: [
+      "Teachings of Diligence",
+      "Guide to Diligence",
+      "Philosophies of Diligence",
+      "Shadow of the Warrior",
+      "Crown of Insight"
+    ],
+    voiceActors: {
+      english: "Jennifer Losi",
+      japanese: "Reina Ueda",
+      chinese: "Lin Su",
+      korean: "Kim Sun-hye"
+    },
+    images: {
+      icon: "/images/characters/ganyu/icon.png",
+      splash: "/images/characters/ganyu/splash.webp",
+      portrait: "/images/characters/ganyu/portrait.png"
+    }
+  },
+  {
+    id: 6,
+    name: "Venti",
+    title: "Windborne Bard",
+    rarity: 5,
+    element: "Anemo",
+    weapon: "Bow",
+    nation: "Mondstadt",
+    birthday: "June 16",
+    constellation: "Carmen Dei",
+    affiliation: "Mondstadt",
+    gender: "Male",
+    model: "Medium Male",
+    releaseVersion: "1.0",
+    emoji: "🌪️",
+    description: "A bard that seems to have arrived on some unknown wind — sometimes sings songs as old as the hills, and other times recites poems that are fresh and new.",
+    stats: { hp: 10531, atk: 263, def: 573 },
+    talents: {
+      normalAttack: "Divine Marksmanship",
+      elementalSkill: "Skyward Sonnet",
+      elementalBurst: "Wind's Grand Ode",
+      passive1: "Embrace of Winds",
+      passive2: "Stormeye",
+      passive3: "Windrider"
+    },
+    constellations: [
+      "Splitting Gales",
+      "Breeze of Reminiscence",
+      "Ode to Thousand Winds",
+      "Hurricane of Freedom",
+      "Concerto dal Cielo",
+      "Storm of Defiance"
+    ],
+    recommendedWeapons: [
+      "Elegy for the End",
+      "The Stringless",
+      "Skyward Harp",
+      "Windblume Ode"
+    ],
+    recommendedArtifacts: [
+      "Viridescent Venerer",
+      "Gilded Dreams",
+      "Noblesse Oblige"
+    ],
+    bestTeams: [
+      { name: "Morgana Comp", members: ["Ganyu", "Mona", "Venti", "Diona"] },
+      { name: "Electro Swirl", members: ["Raiden Shogun", "Yae Miko", "Venti", "Bennett"] }
+    ],
+    ascensionMaterials: [
+      "Vayuda Turquoise",
+      "Hurricane Seed",
+      "Cecilia",
+      "Slime Condensate"
+    ],
+    talentMaterials: [
+      "Teachings of Ballad",
+      "Guide to Ballad",
+      "Philosophies of Ballad",
+      "Tail of Boreas",
+      "Crown of Insight"
+    ],
+    voiceActors: {
+      english: "Erika Harlacher",
+      japanese: "Ayumu Murase",
+      chinese: "Miaojiang",
+      korean: "Jung Yoo-mi"
+    },
+    images: {
+      icon: "/images/characters/venti/icon.png",
+      splash: "/images/characters/venti/splash.webp",
+      portrait: "/images/characters/venti/portrait.png"
+    }
+  },
+  {
+    id: 7,
+    name: "Kazuha",
+    title: "Scarlet Leaves Pursue Wild Waves",
+    rarity: 5,
+    element: "Anemo",
+    weapon: "Sword",
+    nation: "Inazuma",
+    birthday: "October 29",
+    constellation: "Acer Palmatum",
+    affiliation: "The Crux",
+    gender: "Male",
+    model: "Medium Male",
+    releaseVersion: "1.6",
+    emoji: "🍃",
+    description: "A wandering samurai from Inazuma who is currently with Liyue's Crux Fleet. A gentle and carefree soul whose heart hides a great many burdens.",
+    stats: { hp: 13348, atk: 297, def: 807 },
+    talents: {
+      normalAttack: "Garyuu Bladework",
+      elementalSkill: "Chihayaburu",
+      elementalBurst: "Kazuha Slash",
+      passive1: "Soumon Swordsmanship",
+      passive2: "Poetics of Fuubutsu",
+      passive3: "Cloud Strider"
+    },
+    constellations: [
+      "Scarlet Hills",
+      "Yamaarashi Tailwind",
+      "Maple Monogatari",
+      "Oozora Gust",
+      "Windsong Poetics",
+      "Crimson Momiji"
+    ],
+    recommendedWeapons: [
+      "Freedom-Sworn",
+      "Iron Sting",
+      "Sacrificial Sword",
+      "Favonius Sword"
+    ],
+    recommendedArtifacts: [
+      "Viridescent Venerer",
+      "Gilded Dreams",
+      "Flower of Paradise Lost"
+    ],
+    bestTeams: [
+      { name: "International", members: ["Childe", "Xiangling", "Bennett", "Kazuha"] },
+      { name: "Hyperbloom", members: ["Nahida", "Kuki Shinobu", "Yelan", "Kazuha"] }
+    ],
+    ascensionMaterials: [
+      "Vayuda Turquoise",
+      "Marionette Core",
+      "Sea Ganoderma",
+      "Treasure Hoarder Insignia"
+    ],
+    talentMaterials: [
+      "Teachings of Diligence",
+      "Guide to Diligence",
+      "Philosophies of Diligence",
+      "Gilded Scale",
+      "Crown of Insight"
+    ],
+    voiceActors: {
+      english: "Mark Whitten",
+      japanese: "Nobunaga Shimazaki",
+      chinese: "Banma",
+      korean: "Kim Shin-woo"
+    },
+    images: {
+      icon: "/images/characters/kazuha/icon.png",
+      splash: "/images/characters/kazuha/splash.webp",
+      portrait: "/images/characters/kazuha/portrait.png"
+    }
+  },
+  {
+    id: 8,
+    name: "Ayaka",
+    title: "Frostflake Heron",
+    rarity: 5,
+    element: "Cryo",
+    weapon: "Sword",
+    nation: "Inazuma",
+    birthday: "September 28",
+    constellation: "Grus Nivis",
+    affiliation: "Yashiro Commission",
+    gender: "Female",
+    model: "Medium Female",
+    releaseVersion: "2.0",
+    emoji: "🌸",
+    description: "Daughter of the Yashiro Commission's Kamisato Clan. Dignified and elegant, as well as wise and strong.",
+    stats: { hp: 12858, atk: 342, def: 784 },
+    talents: {
+      normalAttack: "Kamisato Art: Kabuki",
+      elementalSkill: "Kamisato Art: Hyouka",
+      elementalBurst: "Kamisato Art: Soumetsu",
+      passive1: "Amatsumi Kunitsumi Sanctification",
+      passive2: "Kanten Senmyou Blessing",
+      passive3: "Fruits of Shinsa"
+    },
+    constellations: [
+      "Snowswept Sakura",
+      "Blizzard Blade Seki no To",
+      "Frostbloom Kamifubuki",
+      "Ebb and Flow",
+      "Blossom Cloud Irutsuki",
+      "Dance of Suigetsu"
+    ],
+    recommendedWeapons: [
+      "Mistsplitter Reforged",
+      "Amenoma Kageuchi",
+      "Primordial Jade Cutter",
+      "Blackcliff Longsword"
+    ],
+    recommendedArtifacts: [
+      "Blizzard Strayer",
+      "Gladiator's Finale",
+      "Noblesse Oblige"
+    ],
+    bestTeams: [
+      { name: "Premium Freeze", members: ["Ayaka", "Shenhe", "Kazuha", "Kokomi"] },
+      { name: "F2P Freeze", members: ["Ayaka", "Rosaria", "Sucrose", "Mona"] }
+    ],
+    ascensionMaterials: [
+      "Shivada Jade",
+      "Perpetual Heart",
+      "Sakura Bloom",
+      "Old Handguard"
+    ],
+    talentMaterials: [
+      "Teachings of Elegance",
+      "Guide to Elegance",
+      "Philosophies of Elegance",
+      "Bloodjade Branch",
+      "Crown of Insight"
+    ],
+    voiceActors: {
+      english: "Erica Mendez",
+      japanese: "Saori Hayami",
+      chinese: "Xiao N",
+      korean: "Lee Yu-ri"
+    },
+    images: {
+      icon: "/images/characters/ayaka/icon.png",
+      splash: "/images/characters/ayaka/splash.webp",
+      portrait: "/images/characters/ayaka/portrait.png"
+    }
+  },
+  {
+    id: 9,
+    name: "Xiao",
+    title: "Vigilant Yaksha",
+    rarity: 5,
+    element: "Anemo",
+    weapon: "Polearm",
+    nation: "Liyue",
+    birthday: "April 17",
+    constellation: "Alatus Nemeseos",
+    affiliation: "Liyue Adepti",
+    gender: "Male",
+    model: "Medium Male",
+    releaseVersion: "1.3",
+    emoji: "💚",
+    description: "A yaksha adeptus who has defended Liyue for millennia. Known as the Conqueror of Demons.",
+    stats: { hp: 12736, atk: 349, def: 799 },
+    talents: {
+      normalAttack: "Whirlwind Thrust",
+      elementalSkill: "Lemniscatic Wind Cycling",
+      elementalBurst: "Bane of All Evil",
+      passive1: "Conqueror of Evil: Tamer of Demons",
+      passive2: "Dissolution Eon: Heaven Fall",
+      passive3: "Transcension: Gravity Defier"
+    },
+    constellations: [
+      "Dissolution Eon: Destroyer of Worlds",
+      "Annihilation Eon: Blossom of Kaleidos",
+      "Conqueror of Evil: Wrath Deity",
+      "Transcension: Gravity Defier",
+      "Evil Conqueror: Malefic Armor",
+      "Conqueror of Evil: Guardian Yaksha"
+    ],
+    recommendedWeapons: [
+      "Primordial Jade Winged-Spear",
+      "Staff of Homa",
+      "Calamity Queller",
+      "Deathmatch"
+    ],
+    recommendedArtifacts: [
+      "Vermillion Hereafter",
+      "Desert Pavilion Chronicle",
+      "Gladiator's Finale"
+    ],
+    bestTeams: [
+      { name: "Anemo Hyper", members: ["Xiao", "Faruzan", "Furina", "Xianyun"] },
+      { name: "Double Anemo Geo", members: ["Xiao", "Jean", "Zhongli", "Albedo"] }
+    ],
+    ascensionMaterials: [
+      "Vayuda Turquoise",
+      "Juvenile Jade",
+      "Qingxin",
+      "Slime Condensate"
+    ],
+    talentMaterials: [
+      "Teachings of Prosperity",
+      "Guide to Prosperity",
+      "Philosophies of Prosperity",
+      "Shadow of the Warrior",
+      "Crown of Insight"
+    ],
+    voiceActors: {
+      english: "Laila Berzins",
+      japanese: "Yoshitsugu Matsuoka",
+      chinese: "kinsen",
+      korean: "Sim Kyu-hyuk"
+    },
+    images: {
+      icon: "/images/characters/xiao/icon.png",
+      splash: "/images/characters/xiao/splash.webp",
+      portrait: "/images/characters/xiao/portrait.png"
+    }
+  },
+  {
+    id: 10,
+    name: "Nahida",
+    title: "Physic of Purity",
+    rarity: 5,
+    element: "Dendro",
+    weapon: "Catalyst",
+    nation: "Sumeru",
+    birthday: "October 27",
+    constellation: "Sapientia Oromasdis",
+    affiliation: "Sumeru City",
+    gender: "Female",
+    model: "Short Female",
+    releaseVersion: "3.2",
+    emoji: "🌿",
+    description: "Lesser Lord Kusanali, the current Dendro Archon. She seeks to learn everything about Teyvat.",
+    stats: { hp: 10360, atk: 298, def: 630 },
+    talents: {
+      normalAttack: "Akara",
+      elementalSkill: "All Schemes to Know",
+      elementalBurst: "Illusory Heart",
+      passive1: "Compassion Illuminated",
+      passive2: "Awakening Elucidated",
+      passive3: "On All Things Meditated"
+    },
+    constellations: [
+      "The Seed of Stored Knowledge",
+      "The Root of All Fullness",
+      "The Shoot of Conscious Attainment",
+      "The Stem of Manifest Inference",
+      "The Fruit of Reason's Culmination",
+      "The Fruit of Reason's Culmination II"
+    ],
+    recommendedWeapons: [
+      "A Thousand Floating Dreams",
+      "Kagura's Verity",
+      "Sacrificial Fragments",
+      "The Widsith"
+    ],
+    recommendedArtifacts: [
+      "Deepwood Memories",
+      "Gilded Dreams",
+      "Flower of Paradise Lost"
+    ],
+    bestTeams: [
+      { name: "Hyperbloom", members: ["Nahida", "Xingqiu", "Kuki Shinobu", "Alhaitham"] },
+      { name: "Spread Comp", members: ["Nahida", "Yae Miko", "Alhaitham", "Zhongli"] }
+    ],
+    ascensionMaterials: [
+      "Nagadus Emerald",
+      "Quelled Creeper",
+      "Kalpalata Lotus",
+      "Fungal Spores"
+    ],
+    talentMaterials: [
+      "Teachings of Ingenuity",
+      "Guide to Ingenuity",
+      "Philosophies of Ingenuity",
+      "Puppet Strings",
+      "Crown of Insight"
+    ],
+    voiceActors: {
+      english: "Kimberley Anne Campbell",
+      japanese: "Yukari Tamura",
+      chinese: "Hualing",
+      korean: "Park Shi-yoon"
+    },
+    images: {
+      icon: "/images/characters/nahida/icon.png",
+      splash: "/images/characters/nahida/splash.webp",
+      portrait: "/images/characters/nahida/portrait.png"
+    }
+  },
+  {
+    id: 11,
+    name: "Furina",
+    title: "Endless Soloist of Solitude",
+    rarity: 5,
+    element: "Hydro",
+    weapon: "Sword",
+    nation: "Fontaine",
+    birthday: "October 13",
+    constellation: "Animula Choragi",
+    affiliation: "Court of Fontaine",
+    gender: "Female",
+    model: "Medium Female",
+    releaseVersion: "4.2",
+    emoji: "💧",
+    description: "The flamboyant and celebrated star of the Court of Fontaine. Her every move is full of dramatic flair.",
+    stats: { hp: 15307, atk: 244, def: 695 },
+    talents: {
+      normalAttack: "Soloist's Solicitation",
+      elementalSkill: "Salon Solitaire",
+      elementalBurst: "Let the People Rejoice",
+      passive1: "Endless Waltz",
+      passive2: "The Sea Is My Stage",
+      passive3: "Unheard Confession"
+    },
+    constellations: [
+      "Love Is a Rebellious Bird That None Can Tame",
+      "A Woman Adapts Like Duckweed in Water",
+      "My Secret Is Hidden Within Me, No One Will Know My Name",
+      "They Know Not Life, Who Dwelt in the Loftiest Stars",
+      "His Majesty the King Said, Let There Be Light",
+      "Hear Me — Let Us Raise the Chalice of Love!"
+    ],
+    recommendedWeapons: [
+      "Splendor of Tranquil Waters",
+      "Primordial Jade Cutter",
+      "Festering Desire",
+      "Fleuve Cendre Ferryman"
+    ],
+    recommendedArtifacts: [
+      "Golden Troupe",
+      "Tenacity of the Millelith",
+      "Marechaussee Hunter"
+    ],
+    bestTeams: [
+      { name: "Fontaine Core", members: ["Furina", "Neuvillette", "Kazuha", "Baizhu"] },
+      { name: "Noelle Mono Geo", members: ["Noelle", "Furina", "Gorou", "Albedo"] }
+    ],
+    ascensionMaterials: [
+      "Varunada Lazurite",
+      "Water That Failed to Transcend",
+      "Lakelight Lily",
+      "Whopperflower Nectar"
+    ],
+    talentMaterials: [
+      "Teachings of Justice",
+      "Guide to Justice",
+      "Philosophies of Justice",
+      "Lightless Silk String",
+      "Crown of Insight"
+    ],
+    voiceActors: {
+      english: "Amber Lee Connors",
+      japanese: "Inori Minase",
+      chinese: "Qian Chen",
+      korean: "Kim Ha-yeong"
+    },
+    images: {
+      icon: "/images/characters/furina/icon.png",
+      splash: "/images/characters/furina/splash.webp",
+      portrait: "/images/characters/furina/portrait.png"
+    }
+  },
+  {
+    id: 12,
+    name: "Bennett",
+    title: "Trial by Fire",
+    rarity: 4,
+    element: "Pyro",
+    weapon: "Sword",
+    nation: "Mondstadt",
+    birthday: "February 29",
+    constellation: "Rota Calamitas",
+    affiliation: "Mondstadt Adventurers' Guild",
+    gender: "Male",
+    model: "Medium Male",
+    releaseVersion: "1.0",
+    emoji: "🗡️",
+    description: "A righteous and good-natured adventurer from Mondstadt who is unfortunately plagued by terrible luck.",
+    stats: { hp: 12397, atk: 191, def: 771 },
+    talents: {
+      normalAttack: "Strike of Fortune",
+      elementalSkill: "Passion Overload",
+      elementalBurst: "Fantastic Voyage",
+      passive1: "Rekindle",
+      passive2: "Fearless",
+      passive3: "It Should Be Safe"
+    },
+    constellations: [
+      "Grand Expectation",
+      "Impasse Conqueror",
+      "Unstoppable Fervor",
+      "Unexpected Odyssey",
+      "True Explorer",
+      "Fire Ventures with Me"
+    ],
+    recommendedWeapons: [
+      "Aquila Favonia",
+      "Mistsplitter Reforged",
+      "Sapwood Blade",
+      "Favonius Sword"
+    ],
+    recommendedArtifacts: [
+      "Noblesse Oblige",
+      "Crimson Witch of Flames",
+      "Instructor"
+    ],
+    bestTeams: [
+      { name: "National Team", members: ["Bennett", "Xiangling", "Xingqiu", "Raiden Shogun"] },
+      { name: "Hypercarry Buff", members: ["Raiden Shogun", "Kujou Sara", "Kazuha", "Bennett"] }
+    ],
+    ascensionMaterials: [
+      "Agnidus Agate",
+      "Everflame Seed",
+      "Windwheel Aster",
+      "Treasure Hoarder Insignia"
+    ],
+    talentMaterials: [
+      "Teachings of Resistance",
+      "Guide to Resistance",
+      "Philosophies of Resistance",
+      "Dvalin's Plume",
+      "Crown of Insight"
+    ],
+    voiceActors: {
+      english: "Cristina Valenzuela",
+      japanese: "Ryota Osaka",
+      chinese: "Sun Ye",
+      korean: "Song Ha-rim"
+    },
+    images: {
+      icon: "/images/characters/bennett/icon.png",
+      splash: "/images/characters/bennett/splash.webp",
+      portrait: "/images/characters/bennett/portrait.png"
+    }
+  },
+  {
+    id: 13,
+    name: "Fischl",
+    title: "Prinzessin der Verurteilung",
+    rarity: 4,
+    element: "Electro",
+    weapon: "Bow",
+    nation: "Mondstadt",
+    birthday: "August 31",
+    constellation: "Corvus",
+    affiliation: "Mondstadt Adventurers' Guild",
+    gender: "Female",
+    model: "Medium Female",
+    releaseVersion: "1.0",
+    emoji: "🌙",
+    description: "A mysterious girl who calls herself 'Prinzessin der Verurteilung' and travels with a night raven named Oz.",
+    stats: { hp: 9189, atk: 244, def: 594 },
+    talents: {
+      normalAttack: "Bolts of Downfall",
+      elementalSkill: "Nightrider",
+      elementalBurst: "Midnight Phantasmagoria",
+      passive1: "Stellar Predator",
+      passive2: "Undone Be Thy Sinful Hex",
+      passive3: "Mein Hausgarten"
+    },
+    constellations: [
+      "Gaze of the Deep",
+      "Devouring Deep",
+      "Thunder Manifest",
+      "Levine's Thunder Javelin",
+      "Against the Fleeing Light",
+      "Evernight Raven"
+    ],
+    recommendedWeapons: [
+      "Aqua Simulacra",
+      "Polar Star",
+      "The Stringless",
+      "Mitternachts Waltz"
+    ],
+    recommendedArtifacts: [
+      "Golden Troupe",
+      "Thundering Fury",
+      "Gladiator's Finale"
+    ],
+    bestTeams: [
+      { name: "Aggravate Comp", members: ["Keqing", "Nahida", "Fischl", "Kazuha"] },
+      { name: "Tazer Team", members: ["Sucrose", "Xingqiu", "Fischl", "Beidou"] }
+    ],
+    ascensionMaterials: [
+      "Vajrada Amethyst",
+      "Lightning Prism",
+      "Small Lamp Grass",
+      "Firm Arrowhead"
+    ],
+    talentMaterials: [
+      "Teachings of Ballad",
+      "Guide to Ballad",
+      "Philosophies of Ballad",
+      "Locket of Boreas",
+      "Crown of Insight"
+    ],
+    voiceActors: {
+      english: "Brittney Karbowski",
+      japanese: "Maaya Uchida",
+      chinese: "Minying",
+      korean: "Park Go-woon"
+    },
+    images: {
+      icon: "/images/characters/fischl/icon.png",
+      splash: "/images/characters/fischl/splash.webp",
+      portrait: "/images/characters/fischl/portrait.png"
+    }
+  }
+];
+
+const WEAPONS = [
+  {id:1,type:'Sword',name:'Mistsplitter Reforged',rarity:5,emoji:'⚔️',atk:674,substat:'Crit DMG +44.1%',passive:'Gain Mistsplitter\'s Emblem from Normal Attacks and Elemental Bursts.'},
+  {id:2,type:'Claymore',name:'Wolf\'s Gravestone',rarity:5,emoji:'🪓',atk:608,substat:'ATK +49.6%',passive:'Increases ATK. When HP is below 30%, increases all party members\' ATK.'},
+  {id:3,type:'Polearm',name:'Staff of Homa',rarity:5,emoji:'🔱',atk:608,substat:'Crit DMG +66.2%',passive:'HP increased by 20%. Provides ATK bonus based on max HP.'},
+  {id:4,type:'Bow',name:'Amos\' Bow',rarity:5,emoji:'🏹',atk:608,substat:'ATK +49.6%',passive:'Increases Normal and Charged Attack DMG. DMG increases further the longer the arrow travels.'},
+  {id:5,type:'Catalyst',name:'Kagura\'s Verity',rarity:5,emoji:'🔮',atk:608,substat:'Crit DMG +66.2%',passive:'Gains the Kagura Dance effect when using Elemental Skill, increasing its DMG.'},
+  {id:6,type:'Sword',name:'Freedom-Sworn',rarity:5,emoji:'🌀',atk:608,substat:'EM +198',passive:'Increases DMG. Triggering Elemental Reactions grants sigils; at 2 sigils, increases Normal/Charged/Plunging ATK DMG and party ATK.'},
+  {id:7,type:'Polearm',name:'Engulfing Lightning',rarity:5,emoji:'⚡',atk:608,substat:'Energy Recharge +55.1%',passive:'ATK increased based on Energy Recharge over the base 100%.'},
+  {id:8,type:'Bow',name:'Polar Star',rarity:5,emoji:'⭐',atk:608,substat:'Crit Rate +33.1%',passive:'Elemental Skill and Burst DMG increased. Gain Ashen Nightstar stacks via hits.'},
+  {id:9,type:'Sword',name:'Iron Sting',rarity:4,emoji:'🗡️',atk:510,substat:'EM +165',passive:'Dealing Elemental DMG increases all DMG by a percentage for a brief period.'},
+  {id:10,type:'Claymore',name:'Sacrificial Greatsword',rarity:4,emoji:'⚒️',atk:565,substat:'Energy Recharge +30.6%',passive:'After hitting a foe with an Elemental Skill, the skill has a chance to end its own cooldown.'},
+  {id:11,type:'Catalyst',name:'Thrilling Tales',rarity:3,emoji:'📖',atk:401,substat:'HP +35.2%',passive:'When switching characters, the new character gains an ATK bonus for a short time. 30s cooldown.'},
+  {id:12,type:'Bow',name:'Favonius Warbow',rarity:4,emoji:'🪃',atk:454,substat:'Energy Recharge +61.3%',passive:'Crit hits have a chance to generate a small amount of Elemental Particles.'},
+];
+
+const ELEMENTS = [
+  {name:'Pyro',color:'#FF6040',emoji:'🔥',desc:'The element of flame, found in Natlan and Liyue. Pyro reactions deal burst damage and apply burning.',reactions:[{with:'Hydro',result:'Vaporize (1.5x/2x)'},{with:'Cryo',result:'Melt (1.5x/2x)'},{with:'Electro',result:'Overloaded'},{with:'Dendro',result:'Burning'}]},
+  {name:'Hydro',color:'#4080FF',emoji:'💧',desc:'The element of water, governing Fontaine. Hydro enables powerful reactions and sustains teams.',reactions:[{with:'Pyro',result:'Vaporize (1.5x/2x)'},{with:'Cryo',result:'Frozen'},{with:'Electro',result:'Electro-Charged'},{with:'Dendro',result:'Bloom'}]},
+  {name:'Cryo',color:'#80DDFF',emoji:'❄️',desc:'The element of ice, associated with Snezhnaya. Frozen and Melt reactions deal massive damage.',reactions:[{with:'Pyro',result:'Melt (1.5x/2x)'},{with:'Hydro',result:'Frozen'},{with:'Electro',result:'Superconduct'},{with:'Anemo',result:'Swirl'}]},
+  {name:'Electro',color:'#C080FF',emoji:'⚡',desc:'The element of lightning, ruling Inazuma. Quicken and related reactions dominate the meta.',reactions:[{with:'Pyro',result:'Overloaded'},{with:'Hydro',result:'Electro-Charged'},{with:'Cryo',result:'Superconduct'},{with:'Dendro',result:'Quicken'}]},
+  {name:'Anemo',color:'#80F0D0',emoji:'🌪️',desc:'The element of wind, blessing Mondstadt. Anemo swirls spread other elements for massive AoE.',reactions:[{with:'Pyro',result:'Swirl (Pyro)'},{with:'Hydro',result:'Swirl (Hydro)'},{with:'Cryo',result:'Swirl (Cryo)'},{with:'Electro',result:'Swirl (Electro)'}]},
+  {name:'Geo',color:'#F0C040',emoji:'🪨',desc:'The element of earth, shaping Liyue. Crystallize creates shields and Geo resonance boosts damage.',reactions:[{with:'Pyro',result:'Crystallize'},{with:'Hydro',result:'Crystallize'},{with:'Cryo',result:'Crystallize'},{with:'Electro',result:'Crystallize'}]},
+  {name:'Dendro',color:'#80E080',emoji:'🌿',desc:'The element of nature, flourishing in Sumeru. Enables Quicken, Bloom, Burgeon, and Hyperbloom.',reactions:[{with:'Pyro',result:'Burning'},{with:'Hydro',result:'Bloom'},{with:'Electro',result:'Quicken'},{with:'Anemo',result:'No reaction'}]},
+];
+
+const REGIONS = [
+  {name:'Mondstadt',emoji:'🏰',color:'#80F0D0',archon:'Barbatos (Anemo)',desc:'The City of Freedom, where the Anemo Archon once wandered as a bard. Known for its wind and wine.',tags:['Anemo','Knights of Favonius','Stormterror\'s Lair','Cecilia Garden']},
+  {name:'Liyue',emoji:'⛵',color:'#F0C040',archon:'Rex Lapis (Geo)',desc:'The Harbor of Stone, governed by the Liyue Qixing and protected by adepti from ancient times.',tags:['Geo','Liyue Qixing','Cloud Retainer','Domain of Guyun']},
+  {name:'Inazuma',emoji:'🌸',color:'#C080FF',archon:'Raiden Makoto (Electro)',desc:'The Archipelago of Thunder, locked in eternal sakoku under the Shogun\'s iron rule for centuries.',tags:['Electro','Yashiro Commission','Tatarasuna','Narukami Island']},
+  {name:'Sumeru',emoji:'🌿',color:'#80E080',archon:'Greater Lord Rukkhadevata (Dendro)',desc:'The City of Wisdom, home to the Akademiya and the vast rainforests and deserts of Dendro.',tags:['Dendro','Akademiya','Aaru Village','Apam Woods']},
+  {name:'Fontaine',emoji:'⚖️',color:'#4080FF',archon:'Focalors (Hydro)',desc:'The Nation of Justice, where the Hydro Archon presides over theatrical trials of law and order.',tags:['Hydro','Opera Epiclese','Court of Fontaine','Poisson']},
+  {name:'Natlan',emoji:'🔥',color:'#FF6040',archon:'Murata (Pyro)',desc:'The Nation of War, where the eternal flame burns and warriors test their strength against each other.',tags:['Pyro','Scions of the Canopy','Pillar of Leviathan','Natlan Tribes']},
+  {name:'Snezhnaya',emoji:'☃️',color:'#B0E0FF',archon:'Tsaritsa (Cryo)',desc:'The Nation of Cryo, ruled by the enigmatic Tsaritsa whose Fatui operate across all of Teyvat.',tags:['Cryo','Fatui','Harbingers','Unknown']},
+];
+
+const NEWS = [
+  {tag:'Update',emoji:'🎮',color:'#4A2070',title:'Version 5.2 — The Horizon Beyond Horizons',excerpt:'New characters, weapons, and story quests arriving alongside the second chapter of the Natlan questline.',date:'Nov 20, 2024'},
+  {tag:'Character',emoji:'🔥',color:'#FF4020',title:'Mavuika — Pyro DPS Archon Revealed',excerpt:'The Pyro Archon finally joins your roster with an explosive playstyle centered on Nightsoul mechanics.',date:'Nov 15, 2024'},
+  {tag:'Event',emoji:'⭐',color:'#C8A96E',title:'Lantern Rite 2025 — Embers of Unity',excerpt:'Join Liyue\'s beloved festival featuring new minigames, wish bundles, and a free 4-star character.',date:'Jan 25, 2025'},
+  {tag:'Patch Notes',emoji:'📋',color:'#3366CC',title:'Version 5.1 Balance Changes & Fixes',excerpt:'Adjustments to Furina, Zhongli shield scaling, and multiple QoL improvements to the adventure experience.',date:'Oct 8, 2024'},
+  {tag:'Weapon',emoji:'⚔️',color:'#7B44B8',title:'Peak Patrol Song — New 5-Star Polearm',excerpt:'Natlan\'s signature polearm arrives with an aggressive buff-stacking passive perfect for frontline warriors.',date:'Nov 20, 2024'},
+  {tag:'Community',emoji:'🎉',color:'#C8A96E',title:'Genshin Impact Reaches 60 Million Players',excerpt:'miHoYo celebrates a major milestone with anniversary rewards distributed to all Travelers worldwide.',date:'Sep 28, 2024'},
+];
+
+const EVENTS = [
+  {name:'Simulanka',emoji:'🎪',color:'#C080FF',status:'active',desc:'Explore a dream world created by Arlecchino\'s gift, filled with platformer challenges and puzzles.',dates:'Nov 15 – Dec 2, 2024',bg:'linear-gradient(135deg,rgba(192,128,255,0.3),rgba(74,32,112,0.6))'},
+  {name:'Spices from the West',emoji:'🍲',color:'#F0C040',status:'active',desc:'Cook exotic dishes from the far west using special ingredients gathered across Teyvat.',dates:'Nov 11 – Nov 25, 2024',bg:'linear-gradient(135deg,rgba(240,192,64,0.3),rgba(120,80,0,0.6))'},
+  {name:'Ley Line Overflow',emoji:'⚡',color:'#80E080',status:'upcoming',desc:'Ley Line Blossoms yield double rewards during this limited period event.',dates:'Nov 25 – Dec 1, 2024',bg:'linear-gradient(135deg,rgba(128,224,128,0.3),rgba(0,80,0,0.6))'},
+  {name:'Lantern Rite 2025',emoji:'🏮',color:'#FF9040',status:'upcoming',desc:'Liyue\'s annual lantern festival returns with free characters, minigames, and gorgeous fireworks.',dates:'Jan 25 – Feb 17, 2025',bg:'linear-gradient(135deg,rgba(255,144,64,0.3),rgba(100,40,0,0.6))'},
+  {name:'Unreconciled Stars',emoji:'☄️',color:'#4080FF',status:'ended',desc:'A limited event where fallen meteorites plagued Teyvat. Fischl was first introduced here.',dates:'Nov 16 – Dec 7, 2020',bg:'linear-gradient(135deg,rgba(64,128,255,0.2),rgba(0,20,80,0.6))'},
+];
+
+const BANNERS = [
+  {name:'Tapestry of Golden Flames',type:'Character Event Wish',chars:'Mavuika ✦✦✦✦✦ · Xilonen ✦✦✦✦✦',ends:'Dec 17, 2024',emoji:'🔥',color:'#FF6040',isNew:true},
+  {name:'Everbloom Violet',type:'Character Event Wish',chars:'Chiori ✦✦✦✦✦ · Arlecchino ✦✦✦✦✦',ends:'Dec 17, 2024',emoji:'🌸',color:'#C080FF',isNew:true},
+  {name:'Epitome Invocation',type:'Weapon Event Wish',chars:'Peak Patrol Song · Absolution',ends:'Dec 17, 2024',emoji:'⚔️',color:'#C8A96E',isNew:false},
+];
+
+const GALLERY_ITEMS = [
+  {label:'Hu Tao Splash Art',emoji:'🔥',ratio:'3/4',cat:'Characters',color:'#3D1010'},
+  {label:'Liyue Harbor at Dawn',emoji:'🏙️',ratio:'16/9',cat:'Landscapes',color:'#101D3D'},
+  {label:'Raiden Shogun',emoji:'⚡',ratio:'3/4',cat:'Characters',color:'#1D1040'},
+  {label:'Mondstadt Cathedral',emoji:'🏰',ratio:'4/3',cat:'Landscapes',color:'#0A2010'},
+  {label:'Zhongli Official Art',emoji:'🪨',ratio:'1/1',cat:'Official Art',color:'#2D2008'},
+  {label:'Inazuma Thunderstorm',emoji:'🌸',ratio:'16/9',cat:'Landscapes',color:'#1A0040'},
+  {label:'Ganyu Wallpaper',emoji:'❄️',ratio:'16/9',cat:'Wallpaper',color:'#001D3D'},
+  {label:'Kazuha Autumn',emoji:'🍃',ratio:'3/4',cat:'Characters',color:'#0D1A08'},
+  {label:'Sumeru Rainforest',emoji:'🌿',ratio:'4/3',cat:'Landscapes',color:'#062006'},
+  {label:'Furina Official Art',emoji:'💧',ratio:'3/4',cat:'Official Art',color:'#08102D'},
+  {label:'Ayaka Snowfield',emoji:'🌸',ratio:'16/9',cat:'Wallpaper',color:'#081520'},
+  {label:'Fontaine Underwater',emoji:'⚖️',ratio:'4/3',cat:'Landscapes',color:'#050D2D'},
+];
+
+const MAP_MARKERS = [
+  {x:160,y:180,label:'Mondstadt',type:'city',color:'#80F0D0',emoji:'🏰'},
+  {x:420,y:240,label:'Liyue Harbor',type:'city',color:'#F0C040',emoji:'⛵'},
+  {x:580,y:160,label:'Inazuma City',type:'city',color:'#C080FF',emoji:'🌸'},
+  {x:340,y:340,label:'Stormterror Lair',type:'boss',color:'#FF6040',emoji:'🐉'},
+  {x:490,y:310,label:'Geo Hypostasis',type:'boss',color:'#F0C040',emoji:'💎'},
+  {x:200,y:250,label:'Cecilia Garden',type:'domain',color:'#80DDFF',emoji:'🏛️'},
+  {x:460,y:200,label:'Domain of Guyun',type:'domain',color:'#C8A96E',emoji:'🏛️'},
+  {x:150,y:300,label:'Teleport Waypoint',type:'waypoint',color:'#60C0FF',emoji:'⊕'},
+  {x:310,y:200,label:'Teleport Waypoint',type:'waypoint',color:'#60C0FF',emoji:'⊕'},
+  {x:550,y:280,label:'Teleport Waypoint',type:'waypoint',color:'#60C0FF',emoji:'⊕'},
+  {x:250,y:180,label:'Anemoculus',type:'oculi',color:'#80F0D0',emoji:'💎'},
+  {x:380,y:270,label:'Geoculus',type:'oculi',color:'#F0C040',emoji:'💎'},
+];
+
+const ABOUT_CARDS = [
+  {icon:'📚',title:'Comprehensive Database',text:'Every character, weapon, artifact set, and enemy documented with accurate stats, lore, and gameplay data updated with each patch.'},
+  {icon:'🗺️',title:'Interactive World Map',text:'Explore all of Teyvat with our filterable map showing every chest, boss, domain, specialty material, and collectible.'},
+  {icon:'⚔️',title:'Build Guides',text:'Optimal character builds curated by top players, including weapons, artifacts, stat priorities, and team compositions.'},
+  {icon:'📰',title:'Latest News',text:'Stay updated with patch notes, upcoming characters, event schedules, and community news in real time.'},
+  {icon:'🎨',title:'Art Gallery',text:'Official splash arts, wallpapers, and concept art organized by character, region, and release version.'},
+  {icon:'🤝',title:'Community Driven',text:'Built and maintained by passionate Travelers from around the world, with contributions verified by experienced players.'},
+];
+
+// ============ RENDERING ============
+function elemClass(el){
+  return 'elem-'+el.toLowerCase().replace(' ','');
+}
+
+function renderChars(data, containerId){
+  const c = document.getElementById(containerId);
+  if(!c) return;
+  c.innerHTML = data.map(ch=>`
+    <div class="char-card" onclick="showCharDetail(${ch.id})">
+      <div class="char-artwork" style="background:linear-gradient(135deg,rgba(${ch.element.toLowerCase()==='pyro'?'255,64,32':ch.element.toLowerCase()==='cryo'?'64,180,255':ch.element.toLowerCase()==='electro'?'160,80,255':ch.element.toLowerCase()==='anemo'?'64,220,180':ch.element.toLowerCase()==='geo'?'220,160,32':ch.element.toLowerCase()==='hydro'?'32,120,255':'80,200,80'},0.15) 0%,rgba(10,15,46,0.8) 100%)">
+        <div class="char-silhouette" style="font-size:5rem">${ch.emoji}</div>
+        <div class="char-rarity rarity-${ch.rarity}"></div>
+      </div>
+      <div class="char-info">
+        <div class="char-name">${ch.name}</div>
+        <div class="char-meta">
+          <span class="element-badge ${elemClass(ch.element)}">${ch.element}</span>
+          <span class="weapon-icon">${ch.weapon}</span>
+        </div>
+        <div class="char-region">${ch.nation} · ${ch.weapon}</div>
+        <div class="char-stats">
+          <div class="stat-item"><span class="stat-label">HP</span><span class="stat-val">${ch.stats.hp.toLocaleString()}</span></div>
+          <div class="stat-item"><span class="stat-label">ATK</span><span class="stat-val">${ch.stats.atk}</span></div>
+          <div class="stat-item"><span class="stat-label">DEF</span><span class="stat-val">${ch.stats.def}</span></div>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function showCharDetail(id){
+  const ch = CHARS.find(c=>c.id===id);
+  if(!ch) return;
+  document.getElementById('charDetailContent').innerHTML = `
+    <div class="detail-hero" style="background:linear-gradient(135deg,rgba(${ch.element.toLowerCase()==='pyro'?'255,64,32':ch.element.toLowerCase()==='cryo'?'64,180,255':ch.element.toLowerCase()==='electro'?'160,80,255':ch.element.toLowerCase()==='anemo'?'64,220,180':ch.element.toLowerCase()==='geo'?'220,160,32':ch.element.toLowerCase()==='hydro'?'32,120,255':'80,200,80'},0.15) 0%,rgba(10,15,46,0.85) 100%)">
+      <div class="detail-artwork" style="font-size:6rem; border-color: var(--glass-border)">${ch.emoji}</div>
+      <div class="detail-info">
+        <h1 class="detail-name" style="font-size: 2.2rem">${ch.name}</h1>
+        <div class="detail-role" style="font-size: 0.85rem">
+          <span style="font-family: serif; font-size: 1rem; color: var(--gold-bright); font-style: italic;">"${ch.title}"</span>
+          &nbsp;&nbsp;·&nbsp;&nbsp;
+          <span class="element-badge ${elemClass(ch.element)}">${ch.element}</span>
+          &nbsp;&nbsp;·&nbsp;&nbsp;
+          ${'★'.repeat(ch.rarity)}
+        </div>
+        <p class="detail-bio" style="font-size: 0.95rem">${ch.description}</p>
+        <div class="detail-stats-grid">
+          <div class="detail-stat"><span class="detail-stat-label">Base HP</span><span class="detail-stat-val">${ch.stats.hp.toLocaleString()}</span></div>
+          <div class="detail-stat"><span class="detail-stat-label">Base ATK</span><span class="detail-stat-val">${ch.stats.atk}</span></div>
+          <div class="detail-stat"><span class="detail-stat-label">Base DEF</span><span class="detail-stat-val">${ch.stats.def}</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Enhanced Profile Metadata Grid -->
+    <div class="detail-meta-grid">
+      <div class="detail-meta-item">
+        <span class="detail-meta-label">Nation</span>
+        <span class="detail-meta-value">${ch.nation}</span>
+      </div>
+      <div class="detail-meta-item">
+        <span class="detail-meta-label">Affiliation</span>
+        <span class="detail-meta-value">${ch.affiliation}</span>
+      </div>
+      <div class="detail-meta-item">
+        <span class="detail-meta-label">Birthday</span>
+        <span class="detail-meta-value">${ch.birthday}</span>
+      </div>
+      <div class="detail-meta-item">
+        <span class="detail-meta-label">Constellation Name</span>
+        <span class="detail-meta-value">${ch.constellation}</span>
+      </div>
+      <div class="detail-meta-item">
+        <span class="detail-meta-label">Gender</span>
+        <span class="detail-meta-value">${ch.gender}</span>
+      </div>
+      <div class="detail-meta-item">
+        <span class="detail-meta-label">Model Type</span>
+        <span class="detail-meta-value">${ch.model}</span>
+      </div>
+      <div class="detail-meta-item">
+        <span class="detail-meta-label">Release Version</span>
+        <span class="detail-meta-value">v${ch.releaseVersion}</span>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <button class="tab active" onclick="switchTab(this,'tab-consts')">Constellations</button>
+      <button class="tab" onclick="switchTab(this,'tab-talents')">Talents</button>
+      <button class="tab" onclick="switchTab(this,'tab-build')">Build Guide</button>
+      <button class="tab" onclick="switchTab(this,'tab-teams')">Team Comps</button>
+      <button class="tab" onclick="switchTab(this,'tab-materials')">Materials</button>
+    </div>
+
+    <div class="tab-content active" id="tab-consts">
+      <div class="constellation-grid">
+        ${ch.constellations.map((c,i)=>`
+          <div class="const-card">
+            <div class="const-num">C${i+1}</div>
+            <div>
+              <div class="const-name">${c}</div>
+              <div class="const-desc">${getConstDesc(ch.name, i)}</div>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+
+    <div class="tab-content" id="tab-talents">
+      <div class="constellation-grid">
+        <div class="const-card">
+          <div class="const-num" style="background:linear-gradient(135deg,var(--gold),#A8883E)">N</div>
+          <div><div class="const-name">Normal: ${ch.talents.normalAttack}</div><div class="const-desc">${getTalentActionDesc(ch.name, 'normalAttack')}</div></div>
+        </div>
+        <div class="const-card">
+          <div class="const-num" style="background:linear-gradient(135deg,var(--gold),#A8883E)">E</div>
+          <div><div class="const-name">Skill: ${ch.talents.elementalSkill}</div><div class="const-desc">${getTalentActionDesc(ch.name, 'elementalSkill')}</div></div>
+        </div>
+        <div class="const-card">
+          <div class="const-num" style="background:linear-gradient(135deg,var(--gold),#A8883E)">Q</div>
+          <div><div class="const-name">Burst: ${ch.talents.elementalBurst}</div><div class="const-desc">${getTalentActionDesc(ch.name, 'elementalBurst')}</div></div>
+        </div>
+        <div class="const-card">
+          <div class="const-num" style="background:linear-gradient(135deg,var(--gold),#A8883E)">A1</div>
+          <div><div class="const-name">Passive 1: ${ch.talents.passive1}</div><div class="const-desc">${getTalentActionDesc(ch.name, 'passive1')}</div></div>
+        </div>
+        <div class="const-card">
+          <div class="const-num" style="background:linear-gradient(135deg,var(--gold),#A8883E)">A4</div>
+          <div><div class="const-name">Passive 2: ${ch.talents.passive2}</div><div class="const-desc">${getTalentActionDesc(ch.name, 'passive2')}</div></div>
+        </div>
+        <div class="const-card">
+          <div class="const-num" style="background:linear-gradient(135deg,var(--gold),#A8883E)">Util</div>
+          <div><div class="const-name">Utility: ${ch.talents.passive3}</div><div class="const-desc">${getTalentActionDesc(ch.name, 'passive3')}</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-content" id="tab-build">
+      <div class="constellation-grid">
+        <div class="const-card">
+          <div class="const-num" style="font-size:.65rem">WPN</div>
+          <div>
+            <div class="const-name">Recommended Weapons</div>
+            <div class="const-desc" style="display:flex; flex-direction:column; gap:0.4rem; margin-top:0.4rem;">
+              ${ch.recommendedWeapons.map((w, idx) => `<div><strong style="color:var(--gold)">${idx + 1}.</strong> ${w}</div>`).join('')}
+            </div>
+          </div>
+        </div>
+        <div class="const-card">
+          <div class="const-num" style="font-size:.65rem">ART</div>
+          <div>
+            <div class="const-name">Recommended Artifact Sets</div>
+            <div class="const-desc" style="display:flex; flex-direction:column; gap:0.4rem; margin-top:0.4rem;">
+              ${ch.recommendedArtifacts.map((art, idx) => `<div><strong style="color:var(--gold)">${idx + 1}.</strong> ${art}</div>`).join('')}
+            </div>
+          </div>
+        </div>
+        <div class="const-card">
+          <div class="const-num" style="font-size:.65rem">STT</div>
+          <div>
+            <div class="const-name">Main Stats Priority</div>
+            <div class="const-desc" style="line-height: 1.6;">
+              <strong>Sands:</strong> ATK% (or HP% for Hu Tao/Zhongli, ER% for Raiden)<br>
+              <strong>Goblet:</strong> ${ch.element} DMG Bonus<br>
+              <strong>Circlet:</strong> Crit Rate or Crit DMG
+            </div>
+          </div>
+        </div>
+        <div class="const-card">
+          <div class="const-num" style="font-size:.65rem">SUB</div>
+          <div>
+            <div class="const-name">Substat Priority</div>
+            <div class="const-desc" style="line-height: 1.6;">
+              Crit Rate ≥ Crit DMG &gt; ATK% / HP% &gt; Elemental Mastery &gt; Energy Recharge
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-content" id="tab-teams">
+      <div class="teams-container">
+        ${ch.bestTeams.map(team => `
+          <div class="team-card">
+            <div class="team-name">${team.name}</div>
+            <div class="team-members">
+              ${team.members.map(member => {
+                const memberChar = CHARS.find(x => x.name.toLowerCase() === member.toLowerCase());
+                const emoji = memberChar ? memberChar.emoji : '👤';
+                return `
+                  <div class="team-member">
+                    <span style="font-size: 1.5rem">${emoji}</span>
+                    <span class="team-member-name">${member}</span>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+
+    <div class="tab-content" id="tab-materials">
+      <div class="materials-container">
+        <div class="materials-block">
+          <div class="materials-title">Character Ascension Materials</div>
+          <div class="materials-list">
+            ${ch.ascensionMaterials.map(mat => `
+              <span class="material-badge">💎 ${mat}</span>
+            `).join('')}
+          </div>
+        </div>
+        <div class="materials-block">
+          <div class="materials-title">Talent Level-Up Materials</div>
+          <div class="materials-list">
+            ${ch.talentMaterials.map(mat => `
+              <span class="material-badge">📖 ${mat}</span>
+            `).join('')}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Voice Actors (VAs) Section -->
+    <div class="voice-actors-block">
+      <div class="materials-title">Voice Actors (VAs)</div>
+      <div class="voice-actors-grid">
+        <div class="va-item">
+          <span class="va-lang">English</span>
+          <span class="va-name">${ch.voiceActors.english}</span>
+        </div>
+        <div class="va-item">
+          <span class="va-lang">Japanese</span>
+          <span class="va-name">${ch.voiceActors.japanese}</span>
+        </div>
+        <div class="va-item">
+          <span class="va-lang">Chinese</span>
+          <span class="va-name">${ch.voiceActors.chinese}</span>
+        </div>
+        <div class="va-item">
+          <span class="va-lang">Korean</span>
+          <span class="va-name">${ch.voiceActors.korean}</span>
+        </div>
+      </div>
+    </div>
+  `;
+  showPage('char-detail', null);
+}
+
+function getConstDesc(name, i) {
+  if (name === "Diluc") {
+    const descs = [
+      "Diluc deals 15% more DMG to opponents whose HP is above 50%.",
+      "When Diluc takes DMG, his ATK increases by 10% and his ATK SPD increases by 5%. Stacks up to 3 times.",
+      "Increases the Level of Searing Onslaught by 3.",
+      "Casting Searing Onslaught in rhythm increases the next cast's DMG by 40%.",
+      "Increases the Level of Dawn by 3.",
+      "After casting Searing Onslaught, the next 2 Normal Attacks have their DMG and ATK SPD increased by 30%."
+    ];
+    return descs[i] || "Enhances Diluc's abilities.";
+  }
+  const descs = [
+    "Reduces Elemental Skill cooldown or increases damage output.",
+    "Enhances Normal/Charged Attack capabilities and speeds.",
+    "Increases the Level of Elemental Skill by 3.",
+    "Adds new effects or increases damage of active abilities.",
+    "Increases the Level of Elemental Burst by 3.",
+    "A powerful capstone enhancement to the character's core mechanics."
+  ];
+  return descs[i] || "Enhances character abilities.";
+}
+
+function getTalentActionDesc(name, type) {
+  if (name === "Diluc") {
+    if (type === "normalAttack") return "Perform up to 4 consecutive strikes using the claymore. Charged attack performs continuous slashes.";
+    if (type === "elementalSkill") return "Performs a forward slash that deals Pyro DMG. Can be used 3 times consecutively before entering cooldown.";
+    if (type === "elementalBurst") return "Releases a powerful phoenix that deals massive Pyro DMG and infuses Diluc's sword with Pyro.";
+    if (type === "passive1") return "Reduces Diluc's Charged Attack Stamina Cost by 50% and increases its duration by 3s.";
+    if (type === "passive2") return "The Pyro Infusion provided by Dawn lasts for 4s longer. Diluc gains 20% Pyro DMG Bonus during this effect.";
+    if (type === "passive3") return "Refunds 15% of the ore used when crafting Claymore-type weapons.";
+  }
+  
+  if (type === "normalAttack") return "Standard attacks with the character's signature weapon style.";
+  if (type === "elementalSkill") return "Unleashes elemental energy to damage foes, trigger reactions, and generate particles.";
+  if (type === "elementalBurst") return "Ultimate elemental ability dealing massive damage or providing team-wide support.";
+  if (type === "passive1") return "First ascension utility passive providing combat assistance.";
+  if (type === "passive2") return "Fourth ascension passive offering significant combat stat enhancements.";
+  if (type === "passive3") return "Exploration or crafting passive utility.";
+}
+
+function renderNavbarDropdown() {
+  const container = document.getElementById('charsDropdownMenu');
+  if(!container) return;
+  const colors = {
+    pyro: '#FF6040',
+    electro: '#AA5AFF',
+    geo: '#DCB432',
+    cryo: '#50C8FF',
+    anemo: '#50DCB4',
+    dendro: '#50C850',
+    hydro: '#2878FF'
+  };
+  container.innerHTML = CHARS.map(ch => `
+    <div class="dropdown-item" onclick="viewCharFromNavbar(${ch.id})">
+      <div class="char-dot" style="background:${colors[ch.element.toLowerCase()] || '#fff'}"></div>
+      <span style="font-size: 1rem">${ch.emoji}</span>
+      <span>${ch.name}</span>
+    </div>
+  `).join('');
+}
+
+function viewCharFromNavbar(id) {
+  const charNavLink = document.querySelector('.nav-link-chars');
+  showPage('char-detail', null);
+  document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+  if (charNavLink) charNavLink.classList.add('active');
+  showCharDetail(id);
+}
+
+function switchTab(btn, tabId){
+  btn.closest('.page, #charDetailContent').querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  btn.closest('.page, #charDetailContent').querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+  const target = document.getElementById(tabId);
+  if(target) target.classList.add('active');
+}
+
+function renderWeapons(filterType='All'){
+  const wg = document.getElementById('weaponsGrid');
+  if(!wg) return;
+  const data = filterType==='All'?WEAPONS:WEAPONS.filter(w=>w.type===filterType);
+  wg.innerHTML = data.map(w=>`
+    <div class="weapon-card">
+      <div class="weapon-icon-big">${w.emoji}</div>
+      <div class="weapon-name">${w.name}</div>
+      <div class="weapon-type-badge">${w.type}</div>
+      <div class="weapon-stat">⚔️ Base ATK: ${w.atk}</div>
+      <div class="weapon-stat">📊 ${w.substat}</div>
+      <div style="color:#FFD700;font-size:.75rem;margin:.3rem 0">${'★'.repeat(w.rarity)}</div>
+      <div class="weapon-passive">"${w.passive}"</div>
+    </div>
+  `).join('');
+}
+
+function initWeaponFilters(){
+  const wf = document.getElementById('weaponFilters');
+  if(!wf) return;
+  const types = ['All','Sword','Claymore','Polearm','Bow','Catalyst'];
+  wf.innerHTML = types.map(t=>`<button class="filter-btn ${t==='All'?'active':''}" onclick="filterWeapons(this,'${t}')">${t}</button>`).join('');
+}
+function filterWeapons(btn, type){
+  document.querySelectorAll('#weaponFilters .filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderWeapons(type);
+}
+
+function renderElements(){
+  const eg = document.getElementById('elementsGrid');
+  if(!eg) return;
+  eg.innerHTML = ELEMENTS.map(el=>`
+    <div class="element-card" style="border-color:${el.color}33">
+      <span class="element-icon-big">${el.emoji}</span>
+      <div class="element-name" style="color:${el.color}">${el.name}</div>
+      <div class="element-desc">${el.desc}</div>
+      <div class="reaction-list">
+        ${el.reactions.map(r=>`
+          <div class="reaction-item">
+            <span>+ ${r.with}</span>
+            <span class="reaction-name">${r.result}</span>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderRegions(){
+  const rg = document.getElementById('regionsGrid');
+  if(!rg) return;
+  rg.innerHTML = REGIONS.map(r=>`
+    <div class="region-card">
+      <div class="region-banner" style="background:linear-gradient(135deg,${r.color}44,rgba(10,15,46,0.8))">
+        <span style="font-size:3rem">${r.emoji}</span>
+        <div class="region-name">${r.name}</div>
+      </div>
+      <div class="region-info">
+        <div class="region-archon">Archon: ${r.archon}</div>
+        <div class="region-desc">${r.desc}</div>
+        <div class="region-tags">${r.tags.map(t=>`<span class="region-tag">${t}</span>`).join('')}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderNews(containerId, limit=6){
+  const ng = document.getElementById(containerId);
+  if(!ng) return;
+  ng.innerHTML = NEWS.slice(0,limit).map(n=>`
+    <div class="news-card">
+      <div class="news-img" style="background:linear-gradient(135deg,${n.color}66,rgba(10,15,46,0.9))">${n.emoji}</div>
+      <div class="news-body">
+        <span class="news-tag">${n.tag}</span>
+        <div class="news-title">${n.title}</div>
+        <div class="news-excerpt">${n.excerpt}</div>
+        <div class="news-date">${n.date}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderEvents(){
+  const eg = document.getElementById('eventsGrid');
+  if(!eg) return;
+  eg.innerHTML = EVENTS.map(e=>`
+    <div class="event-card">
+      <div class="event-banner" style="background:${e.bg}">${e.emoji}</div>
+      <div class="event-body">
+        <span class="event-status status-${e.status}">${e.status}</span>
+        <div class="event-name">${e.name}</div>
+        <div class="event-desc">${e.desc}</div>
+        <div class="event-dates">📅 ${e.dates}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderBanners(){
+  const bg = document.getElementById('bannersGrid');
+  if(!bg) return;
+  bg.innerHTML = BANNERS.map(b=>`
+    <div class="banner-card">
+      <div class="banner-artwork" style="background:linear-gradient(135deg,${b.color}44,rgba(10,15,46,0.9)">
+        <span style="font-size:4rem">${b.emoji}</span>
+        ${b.isNew?'<div class="banner-new">NEW</div>':''}
+      </div>
+      <div class="banner-info">
+        <span class="banner-type">${b.type}</span>
+        <div class="banner-name">${b.name}</div>
+        <div class="banner-chars">${b.chars}</div>
+        <div class="banner-ends">Ends: ${b.ends}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderGallery(filter='All'){
+  const gg = document.getElementById('galleryGrid');
+  if(!gg) return;
+  const data = filter==='All'?GALLERY_ITEMS:GALLERY_ITEMS.filter(g=>g.cat===filter);
+  gg.innerHTML = data.map(g=>`
+    <div class="gallery-item">
+      <div class="gallery-img" style="background:${g.color};--ratio:${g.ratio};aspect-ratio:${g.ratio}">${g.emoji}</div>
+      <div class="gallery-overlay"><span class="gallery-label">${g.label}</span></div>
+    </div>
+  `).join('');
+  const gf = document.getElementById('galleryFilters');
+  if(gf && !gf.innerHTML){
+    ['All','Characters','Landscapes','Wallpaper','Official Art'].forEach(f=>{
+      const btn = document.createElement('button');
+      btn.className='filter-btn'+(f==='All'?' active':'');
+      btn.textContent=f;
+      btn.onclick=()=>{document.querySelectorAll('#galleryFilters .filter-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderGallery(f)};
+      gf.appendChild(btn);
+    });
+  }
+}
+
+function renderMap(){
+  const svg = document.getElementById('mapSvg');
+  if(!svg) return;
+  svg.innerHTML = `
+    <rect width="800" height="500" fill="rgba(5,15,40,0.8)" rx="8"/>
+    <text x="400" y="260" text-anchor="middle" fill="rgba(200,169,110,0.06)" font-size="80" font-family="Cinzel,serif" font-weight="900">TEYVAT</text>
+    ${MAP_MARKERS.map(m=>`
+      <g class="map-marker" transform="translate(${m.x},${m.y})" onclick="showMapTooltip('${m.label}')">
+        <circle r="8" fill="${m.color}44" stroke="${m.color}" stroke-width="1.5"/>
+        <text x="0" y="4" text-anchor="middle" font-size="10" fill="${m.color}">${m.type==='city'?'⬡':m.type==='boss'?'✦':m.type==='domain'?'⬢':'◉'}</text>
+        <text x="0" y="22" text-anchor="middle" font-size="9" fill="rgba(255,255,255,0.7)">${m.label.length>12?m.label.slice(0,12)+'…':m.label}</text>
+      </g>
+    `).join('')}
+  `;
+  const mf = document.getElementById('mapFilters');
+  if(mf && !mf.innerHTML){
+    ['All','Cities','Bosses','Domains','Waypoints','Oculi'].forEach(f=>{
+      const btn=document.createElement('button');btn.className='map-filter-btn'+(f==='All'?' active':'');btn.textContent=f;
+      mf.appendChild(btn);
+    });
+  }
+  const ml = document.getElementById('mapLegend');
+  if(ml && !ml.innerHTML){
+    [{c:'#80F0D0',l:'Cities'},{c:'#FF6040',l:'Bosses'},{c:'#C8A96E',l:'Domains'},{c:'#60C0FF',l:'Waypoints'},{c:'#C080FF',l:'Oculi'}].forEach(item=>{
+      ml.innerHTML+=`<div class="legend-item"><div class="legend-dot" style="background:${item.c}"></div>${item.l}</div>`;
+    });
+  }
+}
+function showMapTooltip(label){ /* Could enhance */ }
+
+function renderAbout(){
+  const ag = document.getElementById('aboutGrid');
+  if(!ag) return;
+  ag.innerHTML = ABOUT_CARDS.map(c=>`
+    <div class="about-card">
+      <div class="about-card-icon">${c.icon}</div>
+      <div class="about-card-title">${c.title}</div>
+      <div class="about-card-text">${c.text}</div>
+    </div>
+  `).join('');
+}
+
+function initCharFilters(){
+  const cf = document.getElementById('charFilters');
+  if(!cf) return;
+  const elements = ['All',...new Set(CHARS.map(c=>c.element))];
+  cf.innerHTML = elements.map(e=>`<button class="filter-btn ${e==='All'?'active':''}" onclick="filterChars(this,'${e}')">${e==='All'?'All':e.charAt(0).toUpperCase()+e.slice(1)}</button>`).join('');
+}
+function filterChars(btn, el){
+  document.querySelectorAll('#charFilters .filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  const data = el==='All'?CHARS:CHARS.filter(c=>c.element===el);
+  renderChars(data,'allCharsGrid');
+}
+
+function handleSearch(val){
+  if(!val.trim()) return;
+  const results = CHARS.filter(c=>c.name.toLowerCase().includes(val.toLowerCase())||c.element.toLowerCase().includes(val.toLowerCase())||c.nation.toLowerCase().includes(val.toLowerCase()));
+  renderChars(results,'searchResults');
+  document.getElementById('searchResults').previousElementSibling.innerHTML='<span class="section-label">Search</span><h2 class="section-title">Results for "'+val+'"</h2><div class="section-line"></div>';
+}
+
+// ============ PAGE NAVIGATION ============
+function showPage(pageId, navEl){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  const target = document.getElementById(pageId);
+  if(target) target.classList.add('active');
+  document.querySelectorAll('.nav-link').forEach(l=>l.classList.remove('active'));
+  if(navEl) navEl.classList.add('active');
+  window.scrollTo(0,0);
+
+  if(pageId==='characters'){renderChars(CHARS,'allCharsGrid');initCharFilters();}
+  if(pageId==='weapons'){initWeaponFilters();renderWeapons();}
+  if(pageId==='elements') renderElements();
+  if(pageId==='regions') renderRegions();
+  if(pageId==='events') renderEvents();
+  if(pageId==='news') renderNews('newsGrid');
+  if(pageId==='gallery') renderGallery();
+  if(pageId==='map') renderMap();
+  if(pageId==='about') renderAbout();
+}
+
+// ============ STARS ============
+function createStars(){
+  const container = document.getElementById('bgStars');
+  if(!container) return;
+  for(let i=0;i<120;i++){
+    const star = document.createElement('div');
+    star.className='star';
+    const size = Math.random()*2+0.5;
+    star.style.cssText=`width:${size}px;height:${size}px;left:${Math.random()*100}%;top:${Math.random()*100}%;--dur:${2+Math.random()*4}s;animation-delay:${Math.random()*4}s`;
+    container.appendChild(star);
+  }
+}
+
+function createParticles(){
+  const container = document.getElementById('heroParticles');
+  if(!container) return;
+  for(let i=0;i<30;i++){
+    const p = document.createElement('div');
+    p.className='particle';
+    p.style.cssText=`left:${Math.random()*100}%;bottom:${Math.random()*40}%;--dur:${4+Math.random()*6}s;--dx:${(Math.random()-0.5)*80}px;animation-delay:${Math.random()*6}s;width:${Math.random()<0.3?3:1.5}px;height:${Math.random()<0.3?3:1.5}px`;
+    container.appendChild(p);
+  }
+}
+
+// ============ CURSOR GLOW ============
+document.addEventListener('mousemove',e=>{
+  const g = document.getElementById('cursorGlow');
+  if(g){g.style.left=e.clientX+'px';g.style.top=e.clientY+'px';}
+});
+
+// ============ INIT ============
+createStars();
+createParticles();
+renderBanners();
+renderChars(CHARS.slice(0,8),'featuredCharsGrid');
+renderNews('homeNewsGrid',3);
+renderAbout();
+renderNavbarDropdown();
+</script>
+</body>
+</html>
